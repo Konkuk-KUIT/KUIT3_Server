@@ -38,8 +38,8 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(email, password, phoneNumber, nickname) " +
+                "values(:email, :password, :phoneNumber, :nickname)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -73,7 +73,7 @@ public class UserDao {
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
+        String sql = "select email, phoneNumber, nickname, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
@@ -84,22 +84,21 @@ public class UserDao {
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
+                        rs.getString("phoneNumber"),
                         rs.getString("nickname"),
-                        rs.getString("profile_image"),
                         rs.getString("status"))
         );
     }
 
     public long getUserIdByEmail(String email) {
-        String sql = "select user_id from user where email=:email and status='active'";
+        String sql = "select userId from user where email=:email and status='active'";
         Map<String, Object> param = Map.of("email", email);
         return jdbcTemplate.queryForObject(sql, param, long.class);
     }
 
     public String getPasswordByUserId(long userId) {
-        String sql = "select password from user where user_id=:user_id and status='active'";
-        Map<String, Object> param = Map.of("user_id", userId);
+        String sql = "select password from user where userId=:userId and status='active'";
+        Map<String, Object> param = Map.of("userId", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 
