@@ -65,10 +65,10 @@ public class UserDao {
     }
 
     public int modifyNickname(long userId, String nickname) {
-        String sql = "update user set nickname=:nickname where user_id=:user_id";
+        String sql = "update user set nickname=:nickname where userId=:userId";
         Map<String, Object> param = Map.of(
                 "nickname", nickname,
-                "user_id", userId);
+                "userId", userId);
         return jdbcTemplate.update(sql, param);
     }
 
