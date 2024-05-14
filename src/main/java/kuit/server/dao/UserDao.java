@@ -89,6 +89,16 @@ public class UserDao {
                         rs.getString("status"))
         );
     }
+    public GetUserResponse findById(long userId) {
+        String sql = "select email, phoneNumber, nickname, status from user where userId=:userId and status in ('active', 'dormant')";
+        Map<String, Object> param = Map.of("userId", userId);
+        return jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new GetUserResponse(
+                rs.getString("email"),
+                rs.getString("phoneNumber"),
+                rs.getString("nickname"),
+                rs.getString("status")
+        ));
+    }
 
     public long getUserIdByEmail(String email) {
         String sql = "select userId from user where email=:email and status='active'";
