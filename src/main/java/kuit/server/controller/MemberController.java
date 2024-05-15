@@ -1,19 +1,25 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
-import kuit.server.dto.member.GetMemberResponse;
+import kuit.server.dto.member.response.GetMemberResponse;
+import kuit.server.dto.member.request.PostMemberRequest;
+import kuit.server.dto.member.response.PostMemberResponse;
+import kuit.server.dto.user.PostUserResponse;
 import kuit.server.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -27,5 +33,17 @@ public class MemberController {
         log.info("[UserController.getUserById]");
         return new BaseResponse<>(memberService.findMemberResponseById(memberId));
 
+    }
+
+    /**
+     * 회원 가입
+     */
+    @PostMapping("")
+    public BaseResponse<PostMemberResponse> signUp(@Validated @RequestBody PostMemberRequest postMemberRequest, BindingResult bindingResult) {
+        log.info("[UserController.signUp]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        return new BaseResponse<>(memberService.createMemberByPostMemberResponse(postMemberRequest));
     }
 }

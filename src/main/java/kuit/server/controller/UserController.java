@@ -25,18 +25,6 @@ public class UserController {
     private final UserService userService;
 
     /**
-     * 회원 가입
-     */
-    @PostMapping("")
-    public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
-        log.info("[UserController.signUp]");
-        if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
-        }
-        return new BaseResponse<>(userService.signUp(postUserRequest));
-    }
-
-    /**
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")

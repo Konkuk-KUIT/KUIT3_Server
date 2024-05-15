@@ -1,4 +1,4 @@
-package kuit.server.dto.member;
+package kuit.server.dto.member.response;
 
 import kuit.server.domain.Member;
 import lombok.AllArgsConstructor;
@@ -18,4 +18,5 @@ public class GetMemberResponse {
     public static GetMemberResponse of(Member member){
         return new GetMemberResponse(member.getMemberId(),member.getName(),member.getNickname(),member.getPassword(),member.getPhone_num(),member.getEmail());
     }
+
 }
