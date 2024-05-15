@@ -3,6 +3,7 @@ package kuit.server.dao;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
+import kuit.server.dto.user.UserAddressRequest;
 import kuit.server.dto.user.UserOrdersResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -13,6 +14,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -128,4 +131,24 @@ public class UserDao {
             return orders;
         });
     }
+
+    public void createAddress(String userId, UserAddressRequest userAddressRequest) {
+        String sql = "INSERT INTO address (user_id,address_name, request, area_password, instruction, latitude, longitude, status, created_at, updated_at)" +
+                "VALUES (:user_id, :address_name, :request, :area_password, :instruction, :latitude, :longitude, :status, :created_at, :updated_at) ";
+
+        Map<String, Object> param = Map.of(
+                "user_id",userId,
+                "address_name", userAddressRequest.getAddress_name(),
+                "request", userAddressRequest.getRequest(),
+                "area_password", userAddressRequest.getArea_password(),
+                "instruction", userAddressRequest.getInstruction(),
+                "latitude", userAddressRequest.getLatitude(),
+                "longitude", userAddressRequest.getLongitude(),
+                "status", "active",
+                "created_at", Timestamp.valueOf(LocalDateTime.now()),
+                "updated_at", Timestamp.valueOf(LocalDateTime.now())
+        );
+        jdbcTemplate.update(sql, param);
+    }
+
 }

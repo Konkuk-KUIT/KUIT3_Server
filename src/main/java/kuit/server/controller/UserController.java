@@ -93,4 +93,16 @@ public class UserController {
         return new BaseResponse<>(userService.getOrders(userId));
     }
 
+
+    // 주소 추가하기
+    @PostMapping("/{userId}/address")
+    public BaseResponse<String> createAddress(@PathVariable String userId,
+                                              @Validated @RequestBody UserAddressRequest userAddressRequest, BindingResult bindingResult ){
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+
+        userService.createAddress(userId,userAddressRequest);
+        return new BaseResponse<>(null);
+    }
 }
