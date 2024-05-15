@@ -1,13 +1,21 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_MENU_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +37,15 @@ public class RestaurantController {
     }
 
     // 메뉴 등록하기
+    @PostMapping("/{restaurantId}/menu")
+    public BaseResponse<String> createMenu(@PathVariable Long restaurantId,
+                                           @Validated @RequestBody RestaurantMenuRequest menuRequest, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
+        }
+        restaurantService.createMenu(restaurantId,menuRequest);
+        return new BaseResponse<>(null);
+    }
 
 
     // 메뉴 삭제하기

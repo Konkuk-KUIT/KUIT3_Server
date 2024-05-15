@@ -1,16 +1,26 @@
 package kuit.server.dao;
 
 import kuit.server.dto.menu.MenuResponse;
+import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class RestaurantDao {
@@ -53,4 +63,22 @@ public class RestaurantDao {
         });
 
     }
+
+    public void createMenu(Long restaurantId, RestaurantMenuRequest menuRequest) {
+        String sql = "INSERT INTO menu (store_id, menu_name, price, status,created_at,updated_at) VALUES (?, ?, ?, ?,?,?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, restaurantId);
+            ps.setString(2, menuRequest.getMenuName());
+            ps.setInt(3, menuRequest.getPrice());
+            ps.setString(4, "active");
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            return ps;
+        }, keyHolder);
+
+    }
+
 }

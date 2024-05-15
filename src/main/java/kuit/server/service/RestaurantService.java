@@ -1,6 +1,7 @@
 package kuit.server.service;
 
 import kuit.server.dao.RestaurantDao;
+import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,9 @@ public class RestaurantService {
 
     public List<RestaurantMenuResponse> getMenu(Long restaurantId) {
         return restaurantDao.getMenu(restaurantId);
+    }
+
+    public void createMenu(Long restaurantId, RestaurantMenuRequest menuRequest) {
+        restaurantDao.createMenu(restaurantId,menuRequest);
     }
 }
