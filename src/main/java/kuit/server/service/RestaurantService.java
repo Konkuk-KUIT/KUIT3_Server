@@ -28,11 +28,15 @@ public class RestaurantService {
         restaurantDao.createMenu(restaurantId,menuRequest);
     }
 
-    public void modifyStatus_delete(Long restaurantId, Long menuId) {
-        restaurantDao.modifyStatus_delete(restaurantId,menuId);
+    public void modifyMenuStatus_delete(Long restaurantId, Long menuId) {
+        restaurantDao.modifyMenuStatus_delete(restaurantId,menuId);
     }
 
     public void updateMenu(Long restaurantId, Long menuId, MenuUpdateRequest menuUpdateRequest) {
         restaurantDao.modifyMenu(restaurantId,menuId,menuUpdateRequest);
+    }
+
+    public void modifyStatus_delete(Long restaurantId) {
+        restaurantDao.modifyStatus_delete(restaurantId);
     }
 }

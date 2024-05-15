@@ -52,7 +52,7 @@ public class RestaurantController {
     // 메뉴 삭제하기
     @PatchMapping("/{restaurantId}/menu/{menuId}/deleted")
     public BaseResponse<String> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
-        restaurantService.modifyStatus_delete(restaurantId,menuId);
+        restaurantService.modifyMenuStatus_delete(restaurantId,menuId);
         return new BaseResponse<>(null);
     }
 
@@ -65,6 +65,13 @@ public class RestaurantController {
         }
 
         restaurantService.updateMenu(restaurantId,menuId,menuUpdateRequest);
+        return new BaseResponse<>(null);
+    }
+
+    // 가게 폐업
+    @PatchMapping("/{restaurantId}/deleted")
+    public BaseResponse<String> deleteRestaurant(@PathVariable Long restaurantId){
+        restaurantService.modifyStatus_delete(restaurantId);
         return new BaseResponse<>(null);
     }
 
