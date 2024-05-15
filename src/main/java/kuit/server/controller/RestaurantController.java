@@ -49,5 +49,10 @@ public class RestaurantController {
 
 
     // 메뉴 삭제하기
+    @PatchMapping("/{restaurantId}/menu/{menuId}/deleted")
+    public BaseResponse<String> deleteMenu(@PathVariable Long restaurantId, @PathVariable Long menuId){
+        restaurantService.modifyStatus_delete(restaurantId,menuId);
+        return new BaseResponse<>(null);
+    }
 
 }

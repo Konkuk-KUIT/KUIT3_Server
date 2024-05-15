@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Repository
@@ -81,4 +82,8 @@ public class RestaurantDao {
 
     }
 
+    public void modifyStatus_delete(Long restaurantId, Long menuId) {
+        String sql = "update menu set status=? where menu_id=? AND store_id=?";
+        jdbcTemplate.update(sql, "deleted", menuId, restaurantId);
+    }
 }

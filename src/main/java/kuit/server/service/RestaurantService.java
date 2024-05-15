@@ -26,4 +26,8 @@ public class RestaurantService {
     public void createMenu(Long restaurantId, RestaurantMenuRequest menuRequest) {
         restaurantDao.createMenu(restaurantId,menuRequest);
     }
+
+    public void modifyStatus_delete(Long restaurantId, Long menuId) {
+        restaurantDao.modifyStatus_delete(restaurantId,menuId);
+    }
 }
