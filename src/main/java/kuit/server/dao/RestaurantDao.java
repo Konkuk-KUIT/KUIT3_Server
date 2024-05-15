@@ -1,6 +1,7 @@
 package kuit.server.dao;
 
 import kuit.server.dto.menu.MenuResponse;
+import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -35,5 +36,21 @@ public class RestaurantDao {
 
             return order;
         });
+    }
+
+    public List<RestaurantMenuResponse> getMenu(Long restaurantId) {
+        String sql = "SELECT * FROM menu m " +
+                "JOIN store s ON m.store_id = s.store_id " +
+                "WHERE m.store_id = ?";
+
+        return jdbcTemplate.query(sql, new Object[]{restaurantId},(rs, rowNum) -> {
+            RestaurantMenuResponse menu = new RestaurantMenuResponse();
+
+            menu.setMenuName(rs.getString("menu_name"));
+            menu.setPrice(rs.getInt("price"));
+
+            return menu;
+        });
+
     }
 }

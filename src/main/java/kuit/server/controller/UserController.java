@@ -85,4 +85,14 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    // 회원 정보 가져오기
+
+
+    // 유저가 주문한 해당 주문 가져오기
+
+
+    // 유저가 주문한 모든 주문 내역 가져오기
+
+
+    // 주문하기
 }

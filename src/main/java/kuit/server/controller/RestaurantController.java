@@ -1,6 +1,7 @@
 package kuit.server.controller;
 
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
@@ -22,17 +23,14 @@ public class RestaurantController {
     }
 
     // 음식점 메뉴 가져오기
-
+    @GetMapping("/{restaurantId}/menus")
+    public BaseResponse<List<RestaurantMenuResponse>> getRestaurantMenu(@PathVariable Long restaurantId){
+        return new BaseResponse<>(restaurantService.getMenu(restaurantId));
+    }
 
     // 메뉴 등록하기
 
 
     // 메뉴 삭제하기
 
-
-    // 카테고리 목록 조회하기
-
-
-
-    // 해당 카테고리 음식점 목록 조회하기
 }
