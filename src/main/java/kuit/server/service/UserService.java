@@ -3,6 +3,8 @@ package kuit.server.service;
 import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
 import kuit.server.dao.UserDao;
+import kuit.server.domain.Member;
+import kuit.server.dto.member.MemberResponse;
 import kuit.server.dto.user.*;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -92,4 +94,13 @@ public class UserService {
         }
     }
 
+    public Member findOneById(Long id){
+        log.info("[UserService.findOneById]");
+        return userDao.findById(id);
+    }
+
+    public MemberResponse findMemberResponseById(Long id){
+        log.info("[UserService.findMemberResponseById]");
+        return MemberResponse.of(findOneById(id));
+    }
 }

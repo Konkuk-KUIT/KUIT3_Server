@@ -1,8 +1,10 @@
 package kuit.server.dao;
 
+import kuit.server.domain.Member;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -11,9 +13,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -101,6 +106,39 @@ public class UserDao {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    /*
+     * 유저 조회
+     */
+    RowMapper<Member> rowMapper = (rs, rowNum) -> new Member(
+            Long.parseLong(rs.getString("member_id")),
+            rs.getString("name"),
+            rs.getString("nickname"),
+            rs.getString("password"),
+            rs.getString("phone_num"),
+            rs.getString("email")
+    );
+    public Member findById(long memberId) {
+        String sql = "select member_id, name, nickname, password, phone_num, email from member where member_id=:member_id";
+        Map<String, Object> param = Map.of("member_id", memberId);
+        try {
+            return jdbcTemplate.queryForObject(sql, param, new RowMapper<Member>() {
+                @Override
+                public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new Member(
+                    Long.parseLong(rs.getString("member_id")),
+                            rs.getString("name"),
+                            rs.getString("nickname"),
+                            rs.getString("password"),
+                            rs.getString("phone_num"),
+                            rs.getString("email")
+                    );
+                }
+            });
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

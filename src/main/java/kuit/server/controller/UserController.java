@@ -2,6 +2,8 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.domain.Member;
+import kuit.server.dto.member.MemberResponse;
 import kuit.server.dto.user.*;
 import kuit.server.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -85,4 +87,14 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    /**
+     * 회원 조회
+     */
+    @GetMapping("/{memberId}")
+    public BaseResponse<MemberResponse> getUserById(
+            @PathVariable long memberId) {
+        log.info("[UserController.getUserById]");
+        return new BaseResponse<>(userService.findMemberResponseById(memberId));
+
+    }
 }
