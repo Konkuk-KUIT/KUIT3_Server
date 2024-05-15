@@ -92,6 +92,11 @@ public class UserController {
 
 
     // 유저가 주문한 모든 주문 내역 가져오기
+    @GetMapping("/{userId}/orders")
+    public BaseResponse<List<UserOrdersResponse>> getOrders(@PathVariable Long userId){
+
+        return new BaseResponse<>(userService.getOrders(userId));
+    }
 
 
     // 주문하기

@@ -1,7 +1,9 @@
 package kuit.server.dao;
 
+import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
+import kuit.server.dto.user.UserOrdersResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -103,4 +105,27 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 
+    public List<UserOrdersResponse> getOrders(Long userId) {
+        String sql = "select * from user u join orders o on u.user_id = o.user_id " +
+                "join order_menu om on o.order_id = om.order_id " +
+                "join store s on o.store_id = s.store_id " +
+                "join menu m on m.store_id = s.store_id " +
+                "where u.user_id=:user_id";
+
+        Map<String, Object> param = Map.of(
+                "user_id", userId);
+
+
+        return jdbcTemplate.query(sql, param,(rs, rowNum) -> {
+            UserOrdersResponse orders = new UserOrdersResponse();
+
+            orders.setStoreName(rs.getString("store_name"));
+            orders.setPrice(rs.getInt("price"));
+            orders.setQuantity(rs.getInt("quantity"));
+            orders.setMenuName(rs.getString("menu_name"));
+            orders.setUpdated_at(rs.getString("o.updated_at"));
+
+            return orders;
+        });
+    }
 }

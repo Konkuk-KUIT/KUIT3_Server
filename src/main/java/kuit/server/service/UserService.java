@@ -92,4 +92,7 @@ public class UserService {
         }
     }
 
+    public List<UserOrdersResponse> getOrders(Long userId) {
+        return userDao.getOrders(userId);
+    }
 }
