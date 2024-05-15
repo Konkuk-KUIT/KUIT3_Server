@@ -42,17 +42,6 @@ public class UserDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
-    public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
-
-        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(sql, param, keyHolder);
-
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
-    }
-
     public int modifyUserStatus_dormant(long userId) {
         String sql = "update user set status=:status where user_id=:user_id";
         Map<String, Object> param = Map.of(
@@ -111,34 +100,37 @@ public class UserDao {
     /*
      * 유저 조회
      */
-    RowMapper<Member> rowMapper = (rs, rowNum) -> new Member(
-            Long.parseLong(rs.getString("member_id")),
-            rs.getString("name"),
-            rs.getString("nickname"),
-            rs.getString("password"),
-            rs.getString("phone_num"),
-            rs.getString("email")
-    );
     public Member findById(long memberId) {
         String sql = "select member_id, name, nickname, password, phone_num, email from member where member_id=:member_id";
         Map<String, Object> param = Map.of("member_id", memberId);
-        try {
-            return jdbcTemplate.queryForObject(sql, param, new RowMapper<Member>() {
-                @Override
-                public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Member(
-                    Long.parseLong(rs.getString("member_id")),
-                            rs.getString("name"),
-                            rs.getString("nickname"),
-                            rs.getString("password"),
-                            rs.getString("phone_num"),
-                            rs.getString("email")
-                    );
-                }
-            });
-        } catch (Exception e) {
-            return null;
-        }
+        return jdbcTemplate.queryForObject(sql, param, new RowMapper<Member>() {
+            @Override
+            public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Member(
+                Long.parseLong(rs.getString("member_id")),
+                        rs.getString("name"),
+                        rs.getString("nickname"),
+                        rs.getString("password"),
+                        rs.getString("phone_num"),
+                        rs.getString("email")
+                );
+            }
+        });
+    }
+
+    /*
+     * 유저 생성
+     */
+
+    public Long createUser(PostUserRequest postUserRequest) {
+        String sql = "insert into user(member_id, name, nickname, password, phone_num, email) " +
+                "values(:member_id, :name, :nickname, :password, :phone_num, :email)";
+
+        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(sql, param, keyHolder);
+
+        return 1L;
     }
 
 }
