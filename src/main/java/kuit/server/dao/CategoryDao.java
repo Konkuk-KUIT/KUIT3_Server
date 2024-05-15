@@ -1,6 +1,7 @@
 package kuit.server.dao;
 
 import kuit.server.dto.category.CategoryResponse;
+import kuit.server.dto.category.CategoryStoreResponse;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,26 @@ public class CategoryDao {
             }
             return  null;
 
+        }).stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    public List<CategoryStoreResponse> getStores(Long categoryId,int minOrderFee) {
+        String sql = "SELECT * FROM store s " +
+                "JOIN category c ON s.category_id = c.category_id " +
+                "WHERE c.category_id = ? AND s.min_price >= ?";
+
+        return jdbcTemplate.query(sql, new Object[]{categoryId, minOrderFee}, (rs, rowNum) -> {
+            CategoryStoreResponse store = new CategoryStoreResponse();
+            if(rs.getString("s.status").equals("active")){
+                store.setStoreName(rs.getString("store_name"));
+                store.setMinOrderFee(rs.getInt("min_price"));
+                store.setWorkingTime(rs.getString("working_time"));
+                store.setAddressName(rs.getString("address_name"));
+                store.setHoliday(rs.getString("holiday"));
+                return store;
+            }
+
+            return  null;
         }).stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 }
