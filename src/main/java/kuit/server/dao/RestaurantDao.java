@@ -1,6 +1,7 @@
 package kuit.server.dao;
 
 import kuit.server.dto.menu.MenuResponse;
+import kuit.server.dto.restaurant.MenuUpdateRequest;
 import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
@@ -85,5 +86,11 @@ public class RestaurantDao {
     public void modifyStatus_delete(Long restaurantId, Long menuId) {
         String sql = "update menu set status=? where menu_id=? AND store_id=?";
         jdbcTemplate.update(sql, "deleted", menuId, restaurantId);
+    }
+
+    public void modifyMenu(Long restaurantId, Long menuId, MenuUpdateRequest menuUpdateRequest) {
+        String sql = "update menu set menu_name=?, price=?, updated_at=? where menu_id=? AND store_id=?";
+        jdbcTemplate.update(sql, menuUpdateRequest.getMenu_name(),menuUpdateRequest.getPrice(),
+                Timestamp.valueOf(LocalDateTime.now()),menuId, restaurantId);
     }
 }

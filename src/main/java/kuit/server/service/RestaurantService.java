@@ -1,6 +1,7 @@
 package kuit.server.service;
 
 import kuit.server.dao.RestaurantDao;
+import kuit.server.dto.restaurant.MenuUpdateRequest;
 import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
@@ -29,5 +30,9 @@ public class RestaurantService {
 
     public void modifyStatus_delete(Long restaurantId, Long menuId) {
         restaurantDao.modifyStatus_delete(restaurantId,menuId);
+    }
+
+    public void updateMenu(Long restaurantId, Long menuId, MenuUpdateRequest menuUpdateRequest) {
+        restaurantDao.modifyMenu(restaurantId,menuId,menuUpdateRequest);
     }
 }

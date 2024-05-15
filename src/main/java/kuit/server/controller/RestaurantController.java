@@ -2,6 +2,7 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.restaurant.MenuUpdateRequest;
 import kuit.server.dto.restaurant.RestaurantMenuRequest;
 import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.restaurant.RestaurantOrderResponse;
@@ -54,5 +55,18 @@ public class RestaurantController {
         restaurantService.modifyStatus_delete(restaurantId,menuId);
         return new BaseResponse<>(null);
     }
+
+    // 메뉴 수정하기
+    @PutMapping("/{restaurantId}/menu/{menuId}/updated")
+    public BaseResponse<String> updateMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
+                                           @RequestBody MenuUpdateRequest menuUpdateRequest,BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
+        }
+
+        restaurantService.updateMenu(restaurantId,menuId,menuUpdateRequest);
+        return new BaseResponse<>(null);
+    }
+
 
 }
