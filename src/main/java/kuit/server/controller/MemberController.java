@@ -71,7 +71,7 @@ public class MemberController {
     }
 
     /**
-     * 회원 전부 수정
+     * 회원 전부 조회
      */
     @GetMapping()
     public BaseResponse<List<GetMemberResponse>> getUsers() {
