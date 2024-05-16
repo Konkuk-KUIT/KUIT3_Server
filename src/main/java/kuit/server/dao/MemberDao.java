@@ -102,4 +102,15 @@ public class MemberDao {
                 "member_id", member.getMemberId());
         return jdbcTemplate.update(sql, param);
     }
+
+
+    /**
+     * member 삭제
+     */
+    public int delete(Long member_id) {
+        String sql = "delete from member where member_id=:member_id";
+        Map<String, Object> param = Map.of(
+                "member_id", member_id);
+        return jdbcTemplate.update(sql, param);
+    }
 }

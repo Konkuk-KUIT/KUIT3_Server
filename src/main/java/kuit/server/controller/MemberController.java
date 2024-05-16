@@ -44,7 +44,7 @@ public class MemberController {
      */
     @PostMapping("")
     public BaseResponse<PostMemberResponse> signUp(@Validated @RequestBody PostMemberRequest postMemberRequest, BindingResult bindingResult) {
-        log.info("[UserController.signUp]");
+        log.info("[MemberController.signUp]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
@@ -56,7 +56,7 @@ public class MemberController {
      **/
     @PatchMapping("/{memberId}/nickname")
     public BaseResponse<String> changeNickname(@RequestBody Map<String,String> requestMap, @PathVariable Long memberId) {
-        log.info("[UserController.changeNickname]");
+        log.info("[MemberController.changeNickname]");
         return new BaseResponse<>(memberService.changeNickname(memberId,requestMap.get("nickname")));
 
     }
@@ -66,7 +66,7 @@ public class MemberController {
      */
     @PutMapping("/{memberId}")
     public BaseResponse<String> changeAll(@RequestBody PostMemberRequest postMemberRequest, @PathVariable Long memberId) {
-        log.info("[UserController.change]");
+        log.info("[MemberController.change]");
         return new BaseResponse<>(memberService.changeAll(memberId,postMemberRequest));
     }
 
@@ -75,8 +75,16 @@ public class MemberController {
      */
     @GetMapping()
     public BaseResponse<List<GetMemberResponse>> getUsers() {
-        log.info("[UserController.getUserById]");
+        log.info("[MemberController.getUserById]");
         return new BaseResponse<>(memberService.findMemberResponses());
 
+    }
+
+    @DeleteMapping("/{memberId}")
+    public BaseResponse<String> deleteMember(@PathVariable long memberId) {
+        log.info("[MemberController.deleteMember]");
+
+
+        return new BaseResponse<>(memberService.deleteById(memberId));
     }
 }

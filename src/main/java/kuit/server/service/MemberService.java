@@ -29,28 +29,28 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     public Member findOneById(Long id){
-        log.info("[UserService.findOneById]");
+        log.info("[MemberService.findOneById]");
         return memberDao.findById(id);
     }
 
     public GetMemberResponse findMemberResponseById(Long id){
-        log.info("[UserService.findMemberResponseById]");
+        log.info("[MemberService.findMemberResponseById]");
         return GetMemberResponse.of(findOneById(id));
     }
 
     public Member createMember(Member member) {
-        log.info("[UserService.member]");
+        log.info("[MemberService.member]");
         memberDao.createMember(member);
         return member;
     }
     public PostMemberResponse createMemberByPostMemberResponse(PostMemberRequest postMemberRequest) {
-        log.info("[UserService.createMemberByPostMemberResponse]");
+        log.info("[MemberService.createMemberByPostMemberResponse]");
         Member member = createMember(postMemberRequest.toEntity());
         return PostMemberResponse.of(member);
     }
 
     public String changeNickname(Long id,String nickname){
-        log.info("[UserService.changeNickname]");
+        log.info("[MemberService.changeNickname]");
         if(memberDao.modifyNickname(id,nickname)==1)
             return "success";
         return "fail";
@@ -58,7 +58,7 @@ public class MemberService {
     }
 
     public String changeAll(Long id,PostMemberRequest postMemberRequest){
-        log.info("[UserService.changeAll]");
+        log.info("[MemberService.changeAll]");
         postMemberRequest.setMemberId(id);
         Member member=postMemberRequest.toEntity();
         if(memberDao.modifyAll(id,member)==1)
@@ -67,14 +67,21 @@ public class MemberService {
     }
 
     public List<Member> findAll(){
-        log.info("[UserService.findAll]");
+        log.info("[MemberService.findAll]");
         return memberDao.findAll();
     }
 
     public List<GetMemberResponse>findMemberResponses(){
-        log.info("[UserService.findMemberResponses]");
+        log.info("[MemberService.findMemberResponses]");
         return findAll().stream()
                 .map(GetMemberResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public String deleteById(Long id){
+        log.info("[MemberService.deleteById]");
+        if(memberDao.delete(id)==1)
+            return "success";
+        return "fail";
     }
 }
