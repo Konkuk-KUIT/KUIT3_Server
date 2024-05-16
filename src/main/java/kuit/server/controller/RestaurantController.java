@@ -7,10 +7,7 @@ import kuit.server.dto.restaurant.GetRestaurantResponse;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,8 +23,13 @@ public class RestaurantController {
      * 식당 목록 조회
      */
     @GetMapping("")
-    public BaseResponse<List<GetRestaurantResponse>> getRestaurants() {
-        return new BaseResponse<>(restaurantService.getRestaurants());
+    public BaseResponse<List<GetRestaurantResponse>> getRestaurants(
+            @RequestParam(required = false) Long categoryId) {
+        if (categoryId != null) {
+            return new BaseResponse<>(restaurantService.getRestaurantsByCategory(categoryId));
+        } else {
+            return new BaseResponse<>(restaurantService.getRestaurants());
+        }
     }
 
     /**
@@ -38,13 +40,13 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getCategories());
     }
 
-    /**
-     * 카테고리별 식당 목록 조회
-     */
-
-    @GetMapping("/{categoryId}")
-    public BaseResponse<List<GetRestaurantResponse>> getRestaurantsByCategory(@PathVariable("categoryId") Long categoryId) {
-        return new BaseResponse<>(restaurantService.getRestaurantsByCategory(categoryId));
-    }
+//    /**
+//     * 카테고리별 식당 목록 조회
+//     */
+//
+//    @GetMapping("/{categoryId}")
+//    public BaseResponse<List<GetRestaurantResponse>> getRestaurantsByCategory(@PathVariable("categoryId") Long categoryId) {
+//        return new BaseResponse<>(restaurantService.getRestaurantsByCategory(categoryId));
+//    }
 
 }
