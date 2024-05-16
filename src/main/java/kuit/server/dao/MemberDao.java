@@ -26,30 +26,25 @@ public class MemberDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    /*
+    /**
      * 유저 조회
-     */
+     **/
     public Member findById(long memberId) {
         String sql = "select member_id, name, nickname, password, phone_num, email from member where member_id=:member_id";
         Map<String, Object> param = Map.of("member_id", memberId);
-        return jdbcTemplate.queryForObject(sql, param, new RowMapper<Member>() {
-            @Override
-            public Member mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Member(
-                        Long.parseLong(rs.getString("member_id")),
-                        rs.getString("name"),
-                        rs.getString("nickname"),
-                        rs.getString("password"),
-                        rs.getString("phone_num"),
-                        rs.getString("email")
-                );
-            }
-        });
+        return jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new Member(
+                Long.parseLong(rs.getString("member_id")),
+                rs.getString("name"),
+                rs.getString("nickname"),
+                rs.getString("password"),
+                rs.getString("phone_num"),
+                rs.getString("email")
+        ));
     }
 
-    /*
+    /**
      * 유저 생성
-     */
+     **/
 
     public Long createMember(Member member) {
 
@@ -61,5 +56,37 @@ public class MemberDao {
         jdbcTemplate.update(sql, param, keyHolder);
 
         return 1L;
+    }
+
+    /**
+     * nickname 변경
+     */
+    public int modifyNickname(Long userId, String nickname) {
+        String sql = "update member set nickname=:nickname where member_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "nickname", nickname,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    /**
+     * 전부 변경
+     */
+    public int modifyAll(Long userId, Member member) {
+        String sql = "update member set " +
+                "name=:name," +
+                "nickname=:nickname," +
+                "password=:password," +
+                "phone_num=:phone_num," +
+                "email=:email " +
+                "where member_id=:member_id";
+        Map<String, Object> param = Map.of(
+                "name",member.getName(),
+                "nickname", member.getNickname(),
+                "password",member.getPassword(),
+                "phone_num",member.getPhone_num(),
+                "email",member.getEmail(),
+                "member_id", member.getMemberId());
+        return jdbcTemplate.update(sql, param);
     }
 }

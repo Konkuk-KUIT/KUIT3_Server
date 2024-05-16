@@ -43,11 +43,27 @@ public class MemberService {
 
     }
     public PostMemberResponse createMemberByPostMemberResponse(PostMemberRequest postMemberRequest) {
-        log.info("[UserService.createMember]");
+        log.info("[UserService.createMemberByPostMemberResponse]");
         Member member = createMember(postMemberRequest.toEntity());
         return PostMemberResponse.of(member);
     }
 
+    public String changeNickname(Long id,String nickname){
+        log.info("[UserService.changeNickname]");
+        if(memberDao.modifyNickname(id,nickname)==1)
+            return "success";
+        return "fail";
+
+    }
+
+    public String changeAll(Long id,PostMemberRequest postMemberRequest){
+        log.info("[UserService.changeAll]");
+        postMemberRequest.setMemberId(id);
+        Member member=postMemberRequest.toEntity();
+        if(memberDao.modifyAll(id,member)==1)
+            return "success";
+        return "fail";
+    }
     /*private void validateEmail(String email) {
         if (userDao.hasDuplicateEmail(email)) {
             throw new UserException(DUPLICATE_EMAIL);
