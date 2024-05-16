@@ -1,6 +1,7 @@
 package kuit.server.dao;
 
 import kuit.server.domain.Member;
+import kuit.server.dto.user.GetUserResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -29,6 +31,21 @@ public class MemberDao {
         String sql = "select member_id, name, nickname, password, phone_num, email from member where member_id=:member_id";
         Map<String, Object> param = Map.of("member_id", memberId);
         return jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new Member(
+                Long.parseLong(rs.getString("member_id")),
+                rs.getString("name"),
+                rs.getString("nickname"),
+                rs.getString("password"),
+                rs.getString("phone_num"),
+                rs.getString("email")
+        ));
+    }
+
+    /**
+     * 유저 전부 조회
+     **/
+    public List<Member> findAll() {
+        String sql = "select member_id, name, nickname, password, phone_num, email from member";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new Member(
                 Long.parseLong(rs.getString("member_id")),
                 rs.getString("name"),
                 rs.getString("nickname"),

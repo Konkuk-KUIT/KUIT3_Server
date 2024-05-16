@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_EMAIL;
 
 @Slf4j
@@ -62,9 +65,16 @@ public class MemberService {
             return "success";
         return "fail";
     }
-    /*private void validateEmail(String email) {
-        if (userDao.hasDuplicateEmail(email)) {
-            throw new UserException(DUPLICATE_EMAIL);
-        }
-    }*/
+
+    public List<Member> findAll(){
+        log.info("[UserService.findAll]");
+        return memberDao.findAll();
+    }
+
+    public List<GetMemberResponse>findMemberResponses(){
+        log.info("[UserService.findMemberResponses]");
+        return findAll().stream()
+                .map(GetMemberResponse::of)
+                .collect(Collectors.toList());
+    }
 }

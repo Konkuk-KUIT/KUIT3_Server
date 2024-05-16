@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
@@ -67,5 +68,15 @@ public class MemberController {
     public BaseResponse<String> changeAll(@RequestBody PostMemberRequest postMemberRequest, @PathVariable Long memberId) {
         log.info("[UserController.change]");
         return new BaseResponse<>(memberService.changeAll(memberId,postMemberRequest));
+    }
+
+    /**
+     * 회원 전부 수정
+     */
+    @GetMapping()
+    public BaseResponse<List<GetMemberResponse>> getUsers() {
+        log.info("[UserController.getUserById]");
+        return new BaseResponse<>(memberService.findMemberResponses());
+
     }
 }
