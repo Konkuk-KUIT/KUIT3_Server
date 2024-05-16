@@ -23,7 +23,7 @@ public class StoreDao {
      * 유저 조회
      **/
     public Store findById(long store_id) {
-        String sql = "select store_id, name, minimum_price, status, from store where store_id=:store_id";
+        String sql = "select store_id, name, minimum_price, status from store where store_id=:store_id";
         Map<String, Object> param = Map.of("store_id", store_id);
         return jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new Store(
                 Long.parseLong(rs.getString("store_id")),
