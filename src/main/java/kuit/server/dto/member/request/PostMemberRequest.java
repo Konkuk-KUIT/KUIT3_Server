@@ -12,10 +12,10 @@ public class PostMemberRequest {
     private String name;
     private String nickname;
     private String password;
-    private String phone_num;
+    private String phoneNum;
     private String email;
 
     public Member toEntity(){
-        return new Member(this.memberId,this.name,this.nickname,this.password,this.phone_num,this.email);
+        return new Member(this.memberId,this.name,this.nickname,this.password,this.phoneNum,this.email);
     }
 }

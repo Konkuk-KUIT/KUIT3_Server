@@ -12,11 +12,11 @@ public class GetMemberResponse {
     private String name;
     private String nickname;
     private String password;
-    private String phone_num;
+    private String phoneNum;
     private String email;
 
     public static GetMemberResponse of(Member member){
-        return new GetMemberResponse(member.getMemberId(),member.getName(),member.getNickname(),member.getPassword(),member.getPhone_num(),member.getEmail());
+        return new GetMemberResponse(member.getMemberId(),member.getName(),member.getNickname(),member.getPassword(),member.getPhoneNum(),member.getEmail());
     }
 
 }

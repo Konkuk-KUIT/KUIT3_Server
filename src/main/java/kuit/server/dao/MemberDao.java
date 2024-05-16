@@ -1,9 +1,7 @@
 package kuit.server.dao;
 
 import kuit.server.domain.Member;
-import kuit.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -12,8 +10,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 
 @Slf4j
@@ -49,7 +45,7 @@ public class MemberDao {
     public Long createMember(Member member) {
 
         String sql = "insert into member(member_id, name, nickname, password, phone_num, email) " +
-                "values(:memberId, :name, :nickname, :password, :phone_num, :email)";
+                "values(:memberId, :name, :nickname, :password, :phoneNum, :email)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(member);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -84,7 +80,7 @@ public class MemberDao {
                 "name",member.getName(),
                 "nickname", member.getNickname(),
                 "password",member.getPassword(),
-                "phone_num",member.getPhone_num(),
+                "phone_num",member.getPhoneNum(),
                 "email",member.getEmail(),
                 "member_id", member.getMemberId());
         return jdbcTemplate.update(sql, param);
