@@ -1,7 +1,7 @@
 package kuit.server.dao;
 
-import kuit.server.domain.Member;
 import kuit.server.domain.Store;
+import kuit.server.dto.store.response.JoinStoreCategory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -51,5 +51,23 @@ public class StoreDao {
         jdbcTemplate.update(sql, param, keyHolder);
 
         return 1L;
+    }
+
+    /**
+     * 상점 + 카테고리 조회
+     **/
+
+    public JoinStoreCategory findByIdWithCategory(long store_id) {
+
+        String sql = "select s.store_id, s.name as store_name, minimum_price, status, c.name as category_name " +
+                "from store s join category c on s.store_id =c.store_id  where s.store_id=:store_id";
+        Map<String, Object> param = Map.of("store_id", store_id);
+        return jdbcTemplate.queryForObject(sql, param, (rs, rowNum) -> new JoinStoreCategory(
+                Long.parseLong(rs.getString("store_id")),
+                rs.getString("store_name"),
+                Long.parseLong(rs.getString("minimum_price")),
+                rs.getString("status"),
+                rs.getString("category_name")
+        ));
     }
 }

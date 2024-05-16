@@ -6,6 +6,7 @@ import kuit.server.domain.Member;
 import kuit.server.domain.Store;
 import kuit.server.dto.store.request.PostStoreRequest;
 import kuit.server.dto.store.response.GetStoreResponse;
+import kuit.server.dto.store.response.JoinStoreCategory;
 import kuit.server.dto.store.response.PostStoreResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,5 +41,8 @@ public class StoreService {
         return PostStoreResponse.of(store);
     }
 
-
+    public JoinStoreCategory findStoryWithCategory(Long id){
+        log.info("[StoreService.findStoryWithCategory]");
+        return storeDao.findByIdWithCategory(id);
+    }
 }

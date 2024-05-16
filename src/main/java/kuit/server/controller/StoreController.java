@@ -6,6 +6,7 @@ import kuit.server.dto.member.request.PostMemberRequest;
 import kuit.server.dto.member.response.PostMemberResponse;
 import kuit.server.dto.store.request.PostStoreRequest;
 import kuit.server.dto.store.response.GetStoreResponse;
+import kuit.server.dto.store.response.JoinStoreCategory;
 import kuit.server.dto.store.response.PostStoreResponse;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.service.StoreService;
@@ -33,7 +34,7 @@ public class StoreController {
      * 상점 조회
      */
     @GetMapping("/{storeId}")
-    public BaseResponse<GetStoreResponse> getUserById(
+    public BaseResponse<GetStoreResponse> getStoreById(
             @PathVariable long storeId) {
         log.info("[StoreController.getUserById]");
         return new BaseResponse<>(storeService.findStoreResponseById(storeId));
@@ -50,5 +51,17 @@ public class StoreController {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(storeService.createStoreByPostStoreResponse(postStoreRequest));
+    }
+
+
+    /**
+     * 상점 + 카테고라 조회
+     */
+    @GetMapping("/{storeId}/categorys")
+    public BaseResponse<JoinStoreCategory> getStoreByIdWithCategory(
+            @PathVariable long storeId) {
+        log.info("[StoreController.getStoreByIdWithCategory]");
+        return new BaseResponse<>(storeService.findStoryWithCategory(storeId));
+
     }
 }

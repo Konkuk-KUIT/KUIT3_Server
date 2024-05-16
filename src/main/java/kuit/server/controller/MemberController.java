@@ -80,11 +80,12 @@ public class MemberController {
 
     }
 
+    /**
+     * 회원 삭제
+     */
     @DeleteMapping("/{memberId}")
     public BaseResponse<String> deleteMember(@PathVariable long memberId) {
         log.info("[MemberController.deleteMember]");
-
-
         return new BaseResponse<>(memberService.deleteById(memberId));
     }
 }
