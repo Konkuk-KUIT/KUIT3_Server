@@ -39,8 +39,6 @@ public class MemberService {
         log.info("[UserService.member]");
         memberDao.createMember(member);
         return member;
-
-
     }
     public PostMemberResponse createMemberByPostMemberResponse(PostMemberRequest postMemberRequest) {
         log.info("[UserService.createMemberByPostMemberResponse]");

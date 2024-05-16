@@ -9,6 +9,6 @@ public class Store {
 
     private Long storeId;
     private String name;
-    private String minimumPrice;
+    private Long minimumPrice;
     private String status;
 }

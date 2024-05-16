@@ -6,14 +6,13 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class GetStoreResponse {
-
+public class PostStoreResponse {
     private Long storeId;
     private String name;
     private Long minimumPrice;
     private String status;
 
-    public static GetStoreResponse of(Store store){
-        return new GetStoreResponse(store.getStoreId(),store.getName(),store.getMinimumPrice(),store.getStatus());
+    public static PostStoreResponse of(Store store){
+        return new PostStoreResponse(store.getStoreId(),store.getName(),store.getMinimumPrice(),store.getStatus());
     }
 }
