@@ -1,8 +1,10 @@
 package kuit.server.dao;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -38,8 +40,8 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(email, password, phone_number, nickname) " +
+                "values(:email, :password, :phoneNumber, :nickname)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -73,7 +75,7 @@ public class UserDao {
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
+        String sql = "select email, phone_number, nickname, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
@@ -86,7 +88,6 @@ public class UserDao {
                         rs.getString("email"),
                         rs.getString("phone_number"),
                         rs.getString("nickname"),
-                        rs.getString("profile_image"),
                         rs.getString("status"))
         );
     }
@@ -103,4 +104,12 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 
+    public GetUserResponse getUserByUserId(long userId) {
+        String sql = "select email, phone_number, nickname, status from user " +
+                "where user_id=:user_id";
+        Map<String, Object> param = Map.of("user_id", userId);
+
+        return jdbcTemplate.queryForObject(sql, param, new BeanPropertyRowMapper<>(GetUserResponse.class));
+
+    }
 }

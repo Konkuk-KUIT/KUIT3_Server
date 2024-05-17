@@ -92,4 +92,7 @@ public class UserService {
         }
     }
 
+    public GetUserResponse getUserInfoByUserId(long userId) {
+        return userDao.getUserByUserId(userId);
+    }
 }

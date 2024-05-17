@@ -27,7 +27,7 @@ public class UserController {
     /**
      * 회원 가입
      */
-    @PostMapping("")
+    @PostMapping("/signup")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
         if (bindingResult.hasErrors()) {
@@ -49,7 +49,7 @@ public class UserController {
     /**
      * 회원 탈퇴
      */
-    @PatchMapping("/{userId}/deleted")
+    @PatchMapping("/{userId}/cancel")
     public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
         log.info("[UserController.modifyUserStatus_delete]");
         userService.modifyUserStatus_deleted(userId);
@@ -85,4 +85,8 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    @GetMapping("/{userId}")
+    public GetUserResponse getUserInfo(@PathVariable long userId) {
+        return userService.getUserInfoByUserId(userId);
+    }
 }
