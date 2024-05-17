@@ -92,13 +92,13 @@ public class UserDao {
     }
 
     public long getUserIdByEmail(String email) {
-        String sql = "select user_id from user where email=:email and status='active'";
+        String sql = "select user_id from user where email=:email and status='일반'";
         Map<String, Object> param = Map.of("email", email);
         return jdbcTemplate.queryForObject(sql, param, long.class);
     }
 
     public String getPasswordByUserId(long userId) {
-        String sql = "select password from user where user_id=:user_id and status='active'";
+        String sql = "select password from user where user_id=:user_id and status='일반'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
