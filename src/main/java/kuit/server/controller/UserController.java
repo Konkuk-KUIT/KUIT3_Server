@@ -37,6 +37,21 @@ public class UserController {
     }
 
     /**
+     * 회원 목록 조회
+     */
+    @GetMapping("")
+    public BaseResponse<List<GetUserResponse>> getUsers(
+            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(required = false, defaultValue = "") String email,
+            @RequestParam(required = false, defaultValue = "active") String status) {
+        log.info("[UserController.getUsers]");
+        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+            throw new UserException(INVALID_USER_STATUS);
+        }
+        return new BaseResponse<>(userService.getUsers(name, email, status));
+    }
+
+    /**
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
@@ -59,30 +74,16 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+    @PatchMapping("/{userId}/name")
+    public BaseResponse<String> modifyName(@PathVariable long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        userService.modifyName(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
 
-    /**
-     * 회원 목록 조회
-     */
-    @GetMapping("")
-    public BaseResponse<List<GetUserResponse>> getUsers(
-            @RequestParam(required = false, defaultValue = "") String nickname,
-            @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
-        log.info("[UserController.getUsers]");
-        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
-            throw new UserException(INVALID_USER_STATUS);
-        }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
-    }
 
 }
