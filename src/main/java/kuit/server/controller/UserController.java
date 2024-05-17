@@ -19,7 +19,7 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -39,34 +39,34 @@ public class UserController {
     /**
      * 회원 휴면
      */
-    @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_dormant]");
-        userService.modifyUserStatus_dormant(userId);
+    @PatchMapping("/{userid}/Inactive")
+    public BaseResponse<Object> modifyUserStatus_Inactive(@PathVariable long userid) {
+        log.info("[UserController.modifyUserStatus_Inactive]");
+        userService.modifyUserStatus_Inactive(userid);
         return new BaseResponse<>(null);
     }
 
     /**
      * 회원 탈퇴
      */
-    @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
+    @PatchMapping("/{userid}/deleted")
+    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userid) {
         log.info("[UserController.modifyUserStatus_delete]");
-        userService.modifyUserStatus_deleted(userId);
+        userService.modifyUserStatus_deleted(userid);
         return new BaseResponse<>(null);
     }
 
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+    @PatchMapping("/{userid}/name")
+    public BaseResponse<String> modifyNickname(@PathVariable long userid,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        userService.modifyNickname(userid, patchNicknameRequest.getName());
         return new BaseResponse<>(null);
     }
 
@@ -75,14 +75,15 @@ public class UserController {
      */
     @GetMapping("")
     public BaseResponse<List<GetUserResponse>> getUsers(
-            @RequestParam(required = false, defaultValue = "") String nickname,
+            @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "Active") String status) {
         log.info("[UserController.getUsers]");
-        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+        if (!status.equals("Active") && !status.equals("Inactive") && !status.equals("Deleted")) {
             throw new UserException(INVALID_USER_STATUS);
         }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
+        return new BaseResponse<>(userService.getUsers(name, email, status));
     }
+
 
 }

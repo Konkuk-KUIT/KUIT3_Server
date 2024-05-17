@@ -29,24 +29,24 @@ public class AuthService {
         String email = authRequest.getEmail();
 
         // TODO: 1. 이메일 유효성 확인
-        long userId;
+        long userid;
         try {
-            userId = userDao.getUserIdByEmail(email);
+            userid = userDao.getUserIdByEmail(email);
         } catch (IncorrectResultSizeDataAccessException e) {
             throw new UserException(EMAIL_NOT_FOUND);
         }
 
         // TODO: 2. 비밀번호 일치 확인
-        validatePassword(authRequest.getPassword(), userId);
+        validatePassword(authRequest.getPassword(), userid);
 
         // TODO: 3. JWT 갱신
-        String updatedJwt = jwtTokenProvider.createToken(email, userId);
+        String updatedJwt = jwtTokenProvider.createToken(email, userid);
 
-        return new LoginResponse(userId, updatedJwt);
+        return new LoginResponse(userid, updatedJwt);
     }
 
-    private void validatePassword(String password, long userId) {
-        String encodedPassword = userDao.getPasswordByUserId(userId);
+    private void validatePassword(String password, long userid) {
+        String encodedPassword = userDao.getPasswordByUserId(userid);
         if (!passwordEncoder.matches(password, encodedPassword)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }
