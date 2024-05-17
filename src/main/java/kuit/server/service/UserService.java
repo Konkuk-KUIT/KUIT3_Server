@@ -18,7 +18,7 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 @Slf4j
 @Service //@Component 가지고 있음
 @RequiredArgsConstructor
-public class UserService {
+public class UserService {  //비즈니스 로직
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
@@ -83,6 +83,12 @@ public class UserService {
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
+    }
+
+    // 특정 회원 조회
+    public  GetUserResponse getUserById(long userId) {
+        log.info("[UserService.getUserById]", userId);
+        return userDao.findUserById(userId);
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {

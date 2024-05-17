@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
-@Repository
+@Repository //data access object (DB와 상호작용)
 public class UserDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -109,6 +109,19 @@ public class UserDao {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    //특정 회원 조회
+    public  GetUserResponse findUserById(long userId){
+        String sql = "SELECT * FROM user WHERE user_id = :userId";
+        Map<String, Object> params = Map.of("userId",userId);
+        return jdbcTemplate.queryForObject(sql,params,(rs,rowNum)-> new GetUserResponse(
+                rs.getString("email"),
+                rs.getString("phone_number"),
+                rs.getString("nickname"),
+                rs.getString("profile_image"),
+                rs.getString("status")
+        ));
     }
 
 }

@@ -96,4 +96,11 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    // 특정 유저 조회
+    @GetMapping("/{userId}") //@PathVariable 통해 {userId} 처리
+    public BaseResponse<GetUserResponse> getUserById(@PathVariable long userId){
+        log.info("[UserController.getUserById]",userId);
+        GetUserResponse userResponse = userService.getUserById(userId);
+        return new BaseResponse<>(userResponse);
+    }
 }
