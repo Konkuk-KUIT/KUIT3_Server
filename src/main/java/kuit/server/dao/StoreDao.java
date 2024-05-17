@@ -1,5 +1,6 @@
 package kuit.server.dao;
 
+import kuit.server.dto.store.GetStoreResponse;
 import kuit.server.dto.store.PostStoreRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -7,6 +8,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
+import java.util.Collections;
 
 @Slf4j
 @Repository
@@ -26,6 +29,18 @@ public class StoreDao {
         jdbcTemplate.update(sql, paramSource, keyHolder);
 
         return keyHolder.getKey().longValue();
+    }
+
+    public GetStoreResponse findStoreById(long storeId) {
+        String sql = "SELECT store_id, name, address, food_category, type, phone_number FROM Store WHERE store_id = :storeId";
+        return jdbcTemplate.queryForObject(sql, Collections.singletonMap("storeId", storeId), (rs, rowNum) -> new GetStoreResponse(
+                rs.getLong("store_id"),
+                rs.getString("name"),
+                rs.getString("address"),
+                rs.getString("food_category"),
+                rs.getInt("type"),
+                rs.getString("phone_number")
+        ));
     }
 
 }
