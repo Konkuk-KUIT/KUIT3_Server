@@ -113,8 +113,9 @@ public class UserDao {
 
     //특정 회원 조회
     public  GetUserResponse findUserById(long userId){
-        String sql = "SELECT * FROM user WHERE user_id = :userId";
-        Map<String, Object> params = Map.of("userId",userId);
+        String sql = "SELECT * FROM user WHERE user_id = :userId"; //userId와 일치하는 행 선택
+        Map<String, Object> params = Map.of("userId",userId); //쿼리에서 사용될 매개변수 이름, 값 매핑
+        //queryforobject 메서드를 통해 sql 쿼리 실행, 결과를 객체로 매핑 => GetUserResponse 생성자를 사용
         return jdbcTemplate.queryForObject(sql,params,(rs,rowNum)-> new GetUserResponse(
                 rs.getString("email"),
                 rs.getString("phone_number"),
