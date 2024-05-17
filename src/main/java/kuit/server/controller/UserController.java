@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
@@ -24,10 +25,12 @@ public class UserController {
 
     private final UserService userService;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
     /**
      * 회원 가입
      */
     @PostMapping("")
+
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
         if (bindingResult.hasErrors()) {
@@ -84,5 +87,4 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
-
 }
