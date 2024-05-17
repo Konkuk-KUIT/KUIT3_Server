@@ -13,7 +13,7 @@ public class BaseErrorResponse implements ResponseStatus {
     private final int code;
     private final int status;
     private final String message;
-    private final LocalDateTime timestamp;
+    private final LocalDateTime timestamp; // error발생(실패) 시각
 
     public BaseErrorResponse(ResponseStatus status) {
         this.code = status.getCode();

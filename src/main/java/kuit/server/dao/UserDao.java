@@ -41,7 +41,7 @@ public class UserDao {
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
                 "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
+        BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
