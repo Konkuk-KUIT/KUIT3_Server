@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +22,12 @@ public class StoreController {
     public BaseResponse<Long> registerStore(@Validated @RequestBody PostStoreRequest storeRequest){
         long storeId = storeService.resgisterStore(storeRequest);
         return new BaseResponse<>(storeId);
+    }
+
+    @GetMapping("")
+    public BaseResponse<List<GetStoreResponse>> getAllStores() {
+        List<GetStoreResponse> stores = storeService.getAllStores();
+        return new BaseResponse<>(stores);
     }
 
     @GetMapping("/{storeId}")

@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -43,5 +44,16 @@ public class StoreDao {
         ));
     }
 
+    public List<GetStoreResponse> findAllStores() {
+        String sql = "SELECT store_id, name, address, food_category, type, phone_number FROM Store";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> new GetStoreResponse(
+                rs.getLong("store_id"),
+                rs.getString("name"),
+                rs.getString("address"),
+                rs.getString("food_category"),
+                rs.getInt("type"),
+                rs.getString("phone_number")
+        ));
+    }
 }
 

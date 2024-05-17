@@ -6,6 +6,8 @@ import kuit.server.dto.store.PostStoreRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StoreService {
@@ -17,5 +19,9 @@ public class StoreService {
 
     public GetStoreResponse getStoreById(long storeId){
         return storeDao.findStoreById(storeId);
+    }
+
+    public List<GetStoreResponse> getAllStores() {
+        return storeDao.findAllStores();
     }
 }
