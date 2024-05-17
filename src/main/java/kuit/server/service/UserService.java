@@ -16,7 +16,7 @@ import java.util.List;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
-@Service
+@Service //@Component 가지고 있음
 @RequiredArgsConstructor
 public class UserService {
 
@@ -70,6 +70,16 @@ public class UserService {
 
         validateNickname(nickname);
         int affectedRows = userDao.modifyNickname(userId, nickname);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyPassword(long userId, String password) {
+        log.info("[UserService.modifyPassword]");
+
+      //  validatePassword(password);
+        int affectedRows = userDao.modifyPassword(userId, password);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }

@@ -70,6 +70,17 @@ public class UserController {
         return new BaseResponse<>(null);
     }
 
+    @PatchMapping("/{userId}/password")
+    public BaseResponse<String> modifyPassword(@PathVariable long userId,
+                                               @Validated @RequestBody PatchPasswordRequest patchPasswordRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyPassword]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyPassword(userId, patchPasswordRequest.getPassword());
+        return new BaseResponse<>(null);
+    }
+
     /**
      * 회원 목록 조회
      */
