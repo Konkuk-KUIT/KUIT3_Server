@@ -41,7 +41,7 @@ public class UserDao {
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
                 "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
+        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest); // 네임드 파라미터를 자동으로 매핑해줌
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
@@ -103,4 +103,13 @@ public class UserDao {
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
 
+
+    public int modifyProfile_image(Long userId, String profile_image) {
+        String sql = "update user set profile_image = :image" +
+                " where user_id = :user_id";
+        Map<String, Object> param = Map.of(
+                "image", profile_image,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
 }
