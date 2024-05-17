@@ -26,9 +26,9 @@ public class PostUserRequest {
             message = "password: 대문자, 소문자, 특수문자가 적어도 하나씩은 있어야 합니다")
     private String password;
 
-    @NotBlank(message = "phoneNumber: {NotBlank}")
-    @Length(max = 20, message = "phoneNumber: 최대 {max}자리까지 가능합니다")
-    private String phoneNumber;
+    @NotBlank(message = "phone: {NotBlank}")
+    @Length(max = 20, message = "phone: 최대 {max}자리까지 가능합니다")
+    private String phone;
 
     @Nullable
     @Length(max = 25, message = "nickname: 최대 {max}자리까지 가능합니다")

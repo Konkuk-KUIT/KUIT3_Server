@@ -3,6 +3,7 @@ package kuit.server.dao;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -38,14 +39,22 @@ public class UserDao {
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(email, password, phone, nickname, profile_image, created_at, updated_at, status) " +
+                "values(:email, :password, :phone, :nickname, :profileImage, now(), now(), 'active')";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    public int modifyUserStatus_active(long userId) {
+        String sql = "update user set status=:status where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+          "status", "active",
+          "user_id", userId);
+        return jdbcTemplate.update(sql, param);
     }
 
     public int modifyUserStatus_dormant(long userId) {
@@ -73,7 +82,7 @@ public class UserDao {
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
+        String sql = "select email, phone, nickname, profile_image, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
@@ -84,11 +93,18 @@ public class UserDao {
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
+                        rs.getString("phone"),
                         rs.getString("nickname"),
                         rs.getString("profile_image"),
                         rs.getString("status"))
         );
+    }
+
+    public GetUserResponse findById(long userId) {
+        String sql = " select email, phone, nickname, profile_image, status from user " +
+          " where user_id=:userId";
+        Map<String, Object> param = Map.of("userId", userId);
+        return jdbcTemplate.queryForObject(sql, param, new BeanPropertyRowMapper<>(GetUserResponse.class));
     }
 
     public long getUserIdByEmail(String email) {
