@@ -92,4 +92,16 @@ public class UserService {
         }
     }
 
+    public PostLoginResponse login(PostLoginRequest postLoginRequest) {
+        log.info("[UserService.login]");
+
+
+        long userId = userDao.login(postLoginRequest);
+
+        // TODO: 4. JWT 토큰 생성
+        String jwt = jwtTokenProvider.createToken(postLoginRequest.getEmail(), userId);
+
+        return new PostLoginResponse(userId, jwt);
+    }
+
 }
