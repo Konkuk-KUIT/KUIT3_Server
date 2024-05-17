@@ -38,11 +38,11 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
         postUserRequest.resetPassword(encodedPassword);
 
-        // TODO: 3. DB insert & userId 반환
+        //TODO: 3. DB insert & userId 반환
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
-        String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
+        String jwt = "2121212";
 
         return new PostUserResponse(userId, jwt);
     }

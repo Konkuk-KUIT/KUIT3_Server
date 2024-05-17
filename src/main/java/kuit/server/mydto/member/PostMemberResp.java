@@ -1,4 +1,4 @@
-package kuit.server.mydto;
+package kuit.server.mydto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

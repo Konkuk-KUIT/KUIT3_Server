@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@Setter
 @AllArgsConstructor
-public class RestaurantsResp {
-
+public class RestaurantResp {
+    private long restaurant_PK;
+    private String jwt;
 }
