@@ -16,11 +16,12 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 @Component
 public class JwtTokenProvider {
 
+    @Value("${secret.jwt-expired-in}")
+    private long JWT_EXPIRED_IN;
     @Value("${secret.jwt-secret-key}")
     private String JWT_SECRET_KEY;
 
-    @Value("${secret.jwt-expired-in}")
-    private long JWT_EXPIRED_IN;
+
 
     public String createToken(String principal, long userId) {
         log.info("JWT key={}", JWT_SECRET_KEY);
