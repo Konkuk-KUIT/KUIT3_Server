@@ -19,6 +19,7 @@ import java.util.Objects;
 @Repository
 public class UserDao {
 
+    // 파라미터를 바인딩
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public UserDao(DataSource dataSource) {
