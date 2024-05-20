@@ -75,6 +75,15 @@ public class UserService {
         }
     }
 
+    public void modifyPassword(long userId, String password){
+        log.info("[UserService.modifyPassword]");
+
+        int affectedRows = userDao.modifyPassword(userId,password);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
@@ -91,5 +100,4 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
-
 }

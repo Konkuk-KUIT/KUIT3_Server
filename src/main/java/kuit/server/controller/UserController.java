@@ -7,9 +7,11 @@ import kuit.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Binding;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
@@ -30,6 +32,19 @@ public class UserController {
     @PostMapping("")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
+
+        // 예외처리
+        if(postUserRequest.getEmail() : 형식이 알맞지 않는 경우){
+            FieldError fieldError = new FieldError("postUserRequest","email", "이메일 형식이 아닙니다.");
+            bindingResult.addError(fieldError);
+
+        }
+        // 예외처리
+        if(postUserRequest.getPassword() == null){
+            FieldError fieldError = new FieldError("posrUserRequest","password","비밀번호가 존재하지 않습니다.");
+            bindingResult.addError(fieldError);
+        }
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
@@ -69,6 +84,21 @@ public class UserController {
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+
+    /**
+     * 비밀번호 변경
+     */
+    @PatchMapping("/{userId}/password")
+    public BaseResponse<String> modifyPassword(@PathVariable long userId,
+                                               @Validated @RequestBody PatchPasswordRequest patchPasswordRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyPassword");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyPassword(userId, patchPasswordRequest.getPassword());
+        return new BaseResponse<>(null);
+    }
+
 
     /**
      * 회원 목록 조회
