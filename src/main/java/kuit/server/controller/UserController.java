@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.Binding;
@@ -25,6 +26,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 public class UserController {
 
     private final UserService userService;
+    private final PostUserRequestValidator postUserRequestValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder){
+        log.info("init binder {}",dataBinder);
+        dataBinder.addValidators(postUserRequestValidator);
+    }
 
     /**
      * 회원 가입
@@ -33,20 +41,10 @@ public class UserController {
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
 
-        // 예외처리
-        if(postUserRequest.getEmail() : 형식이 알맞지 않는 경우){
-            FieldError fieldError = new FieldError("postUserRequest","email", "이메일 형식이 아닙니다.");
-            bindingResult.addError(fieldError);
-
-        }
-        // 예외처리
-        if(postUserRequest.getPassword() == null){
-            FieldError fieldError = new FieldError("posrUserRequest","password","비밀번호가 존재하지 않습니다.");
-            bindingResult.addError(fieldError);
-        }
+        //postUserRequestValidator.validate(postUserRequest, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new RuntimeException();
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
