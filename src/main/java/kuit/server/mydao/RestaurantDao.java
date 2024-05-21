@@ -1,5 +1,6 @@
 package kuit.server.mydao;
 
+import kuit.server.mydto.retaurant.GetCategoryResponse;
 import kuit.server.mydto.retaurant.RestaurantReq;
 import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
 import lombok.extern.slf4j.Slf4j;
@@ -47,4 +48,12 @@ public class RestaurantDao {
     }
 
 
+    public List<GetCategoryResponse> listUpCategories() {
+        String sql = "select distinct category from restaurant;";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            GetCategoryResponse category = new GetCategoryResponse();
+            category.setCategory(rs.getString("category"));
+            return category;
+        });
+    }
 }

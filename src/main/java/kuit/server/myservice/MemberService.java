@@ -66,8 +66,8 @@ public class MemberService {
     public PostMemberResp signUp(PostMemberReq postMemberReq) {
         log.info("MemberService.signUp");
 
-        if(postMemberReq.getNickname() != null) {
-            validateNickName(postMemberReq.getNickname());
+        if(postMemberReq.getNickName() != null) {
+            validateNickName(postMemberReq.getNickName());
         }
         validateEmail(postMemberReq.getEmail());
 

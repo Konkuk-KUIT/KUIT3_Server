@@ -1,13 +1,12 @@
 package kuit.server.mycontroller;
 
 import kuit.server.common.response.BaseResponse;
-import kuit.server.mydto.member.PostLoginReq;
-import kuit.server.mydto.member.PostLoginResp;
-import kuit.server.mydto.member.PostMemberReq;
-import kuit.server.mydto.member.PostMemberResp;
+import kuit.server.mydto.member.*;
 import kuit.server.myservice.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,8 +19,12 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("")
-    public BaseResponse<PostMemberResp> singUp(@RequestBody PostMemberReq postMemberReq) {
+    public BaseResponse<PostMemberResp> singUp(@Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
         log.info("MemberController.signUp");
+
+        if(bindingResult.hasErrors()) {
+            throw new RuntimeException();
+        }
         return new BaseResponse<>(memberService.signUp(postMemberReq));
     }
 

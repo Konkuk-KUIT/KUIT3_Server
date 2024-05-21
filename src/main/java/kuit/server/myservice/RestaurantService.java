@@ -1,6 +1,7 @@
 package kuit.server.myservice;
 
 import kuit.server.mydao.RestaurantDao;
+import kuit.server.mydto.retaurant.GetCategoryResponse;
 import kuit.server.mydto.retaurant.RestaurantReq;
 import kuit.server.mydto.retaurant.RestaurantResp;
 import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
@@ -25,5 +26,9 @@ public class RestaurantService {
 
     public List<RestaurantMenuResp> getRestaurantFoods(long restaurant_PK) {
         return restaurantDao.getRestaurantFoods(restaurant_PK);
+    }
+
+    public List<GetCategoryResponse> getCategories() {
+        return restaurantDao.listUpCategories();
     }
 }
