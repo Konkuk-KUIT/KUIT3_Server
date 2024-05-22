@@ -1,7 +1,8 @@
 package kuit.server.myservice;
 
 import kuit.server.mydao.RestaurantDao;
-import kuit.server.mydto.retaurant.GetCategoryResponse;
+import kuit.server.mydto.retaurant.GetCategorizedRestaurantResp;
+import kuit.server.mydto.retaurant.GetCategoryResp;
 import kuit.server.mydto.retaurant.RestaurantReq;
 import kuit.server.mydto.retaurant.RestaurantResp;
 import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
@@ -28,7 +29,11 @@ public class RestaurantService {
         return restaurantDao.getRestaurantFoods(restaurant_PK);
     }
 
-    public List<GetCategoryResponse> getCategories() {
+    public List<GetCategoryResp> getCategories() {
         return restaurantDao.listUpCategories();
+    }
+
+    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price) {
+        return restaurantDao.getCategorizedRestaurants(category, min_price);
     }
 }

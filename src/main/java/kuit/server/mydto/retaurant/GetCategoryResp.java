@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCategoryResponse {
+public class GetCategoryResp {
     String category;
 }
