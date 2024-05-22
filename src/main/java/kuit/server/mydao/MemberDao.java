@@ -26,7 +26,7 @@ public class MemberDao {
     public long createMember(PostMemberReq postMemberReq) {
         log.info("MemberDao.createMember");
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+                "values(:email, :password, :phoneNumber, :nickName, :profileImage)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postMemberReq);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -39,14 +39,14 @@ public class MemberDao {
     public boolean hasDuplicateEmail(String email) {
         log.info("MemberDao.hasDuplicateEmail");
         String sql = "select exists(select email from user where email = :email)";
-        Map<String, Object> param = Map.of("email,", email);
+        Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
-    public boolean hasDuplicateNickName(String nickname) {
+    public boolean hasDuplicateNickName(String nickName) {
         log.info("MemberDao.hasDuplicateNickName");
         String sql = "select exists(select email from user where nickname = :nickname)";
-        Map<String, Object> param = Map.of("nickname", nickname);
+        Map<String, Object> param = Map.of("nickname", nickName);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 

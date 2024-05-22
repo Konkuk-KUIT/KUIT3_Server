@@ -76,8 +76,8 @@ public class MemberService {
         return new PostMemberResp(userId, jwt);
     }
 
-    private void validateNickName(String nickname) {
-        if (memberDao.hasDuplicateNickName(nickname)) {
+    private void validateNickName(String nickName) {
+        if (memberDao.hasDuplicateNickName(nickName)) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }

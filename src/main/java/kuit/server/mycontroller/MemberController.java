@@ -29,20 +29,29 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public BaseResponse<PostLoginResp> logIn(@RequestBody PostLoginReq postLoginReq) {
+    public BaseResponse<PostLoginResp> logIn(@Validated @RequestBody PostLoginReq postLoginReq, BindingResult bindingResult) {
         log.info("MemberController.login");
+        if(bindingResult.hasErrors()) {
+            throw new RuntimeException();
+        }
         return new BaseResponse<>(memberService.logIn(postLoginReq));
     }
 
     @PatchMapping("/{userId}/email")
-    public BaseResponse<String> updateEmail(@PathVariable long userId, @RequestBody PostMemberReq postMemberReq) {
+    public BaseResponse<String> updateEmail(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
         log.info("MemberController.updateEmail");
+        if(bindingResult.hasErrors()) {
+            throw new RuntimeException();
+        }
         return new BaseResponse<>(memberService.updateEmail(userId, postMemberReq));
     }
 
     @PatchMapping("/{userId}/password")
-    public BaseResponse<String> updatePassword(@PathVariable long userId, @RequestBody PostMemberReq postMemberReq) {
+    public BaseResponse<String> updatePassword(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
         log.info("MemberController.updatePassword");
+        if(bindingResult.hasErrors()) {
+            throw new RuntimeException();
+        }
         return new BaseResponse<>(memberService.updatePassword(userId, postMemberReq));
     }
 }
