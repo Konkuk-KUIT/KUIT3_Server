@@ -63,7 +63,7 @@ public class RestaurantController {
     /*
     식당 영업시간 문구 수정
      */
-    @PatchMapping("/{restaurantId}")
+    @PatchMapping("/{restaurantId}/businesshour")
     public BaseResponse<Object> modifyBusinnessHour(@PathVariable Long restaurantId,
                                                     @RequestBody PatchBusinessHourRequest patchBusinessHourRequest){
         log.info("[RestaurantController.modifyBusinnessHour]");
