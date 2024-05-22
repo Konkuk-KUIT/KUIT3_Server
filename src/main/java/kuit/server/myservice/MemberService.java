@@ -12,6 +12,8 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Service
@@ -58,7 +60,7 @@ public class MemberService {
 
     private void validatePassword(String password, long userId) {
         String DBpassword = memberDao.getPasswordByUserId(userId);
-        if(!passwordEncoder.matches(DBpassword, password)) {
+        if(!Objects.equals(password, DBpassword)) {
             throw new UserException(PASSWORD_NO_MATCH);
         }
     }
