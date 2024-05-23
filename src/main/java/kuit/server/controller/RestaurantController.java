@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.RestaurantException;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.restaurant.MenuUpdateRequest;
@@ -42,7 +43,7 @@ public class RestaurantController {
     public BaseResponse<String> createMenu(@PathVariable Long restaurantId,
                                            @Validated @RequestBody RestaurantMenuRequest menuRequest, BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
+            throw new RestaurantException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
         }
         restaurantService.createMenu(restaurantId,menuRequest);
         return new BaseResponse<>(null);
@@ -59,9 +60,9 @@ public class RestaurantController {
     // 메뉴 수정하기
     @PutMapping("/{restaurantId}/menu/{menuId}/updated")
     public BaseResponse<String> updateMenu(@PathVariable Long restaurantId, @PathVariable Long menuId,
-                                           @RequestBody MenuUpdateRequest menuUpdateRequest,BindingResult bindingResult) {
+                                           @Validated @RequestBody MenuUpdateRequest menuUpdateRequest,BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
+            throw new RestaurantException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
         }
 
         restaurantService.updateMenu(restaurantId,menuId,menuUpdateRequest);
