@@ -77,20 +77,19 @@ public class UserDao {
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+        String sql = "select email, phone, username, status from user " +
+                "where username like :username and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
-                "nickname", "%" + nickname + "%",
+                "username", "%" + nickname + "%",
                 "email", "%" + email + "%",
                 "status", status);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("nickname"),
-                        rs.getString("profile_image"),
+                        rs.getString("phone"),
+                        rs.getString("username"),
                         rs.getString("status"))
         );
     }
