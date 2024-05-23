@@ -49,12 +49,14 @@ public class UserService {
 
     public void modifyUserStatus_dormant(long userId) {
         log.info("[UserService.modifyUserStatus_dormant]");
-
+        validateDormant(userId);
         int affectedRows = userDao.modifyUserStatus_dormant(userId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
+
+
 
     public void modifyUserStatus_deleted(long userId) {
         log.info("[UserService.modifyUserStatus_deleted]");
@@ -89,6 +91,11 @@ public class UserService {
     private void validateNickname(String nickname) {
         if (userDao.hasDuplicateNickName(nickname)) {
             throw new UserException(DUPLICATE_NICKNAME);
+        }
+    }
+    private void validateDormant(long userId) {
+        if(userDao.hasAlreadyDormant(userId)){
+            throw new UserException(ALREADY_DORMANT);
         }
     }
 

@@ -36,7 +36,11 @@ public class UserDao {
         Map<String, Object> param = Map.of("nickname", nickname);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
-
+    public boolean hasAlreadyDormant(long userId) {
+        String sql = "select exists(select email from user where userid=:userId and status = 'dormant')";
+        Map<String, Object> param = Map.of("userId", userId);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
+    }
     public long createUser(PostUserRequest postUserRequest) {
         String sql = "insert into user(email, password, username, phone) " +
                 "values(:email, :password, :nickname,:phoneNumber)";
@@ -102,5 +106,6 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
 
 }
