@@ -1,7 +1,6 @@
 package kuit.server.service;
 
 import kuit.server.common.exception.RestaurantException;
-import kuit.server.common.exception.UserException;
 import kuit.server.dao.RestaurantDao;
 import kuit.server.dto.restaurant.GetRestaurant;
 import kuit.server.dto.restaurant.GetcategoryResponse;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_EMAIL;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_RESTAURANT_NAME;
 
 @Slf4j
@@ -21,13 +19,9 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUP
 public class RestaurantService {
 
     private final RestaurantDao restaurantDao;
-    public List<GetcategoryResponse> getCatogories(String category) {
-        log.info("[Restaurant.getCategory]");
-        return restaurantDao.getCategory(category);
-    }
-    public List<GetRestaurant> getRestaurants() {
+    public List<GetRestaurant> getRestaurants(String restaurantname, String category, String status) {
         log.info("[Restaurant.getRestaurants]");
-        return restaurantDao.getRestaurants();
+        return restaurantDao.getRestaurants(restaurantname,category,status);
     }
     public long createRestaurant(PostRestaurantRequest postRestaurantRequest){
         validateRestaurantName(postRestaurantRequest.getRestaurantname());

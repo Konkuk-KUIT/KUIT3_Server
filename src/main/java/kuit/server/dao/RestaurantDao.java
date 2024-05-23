@@ -4,7 +4,6 @@ import kuit.server.dto.restaurant.GetRestaurant;
 import kuit.server.dto.restaurant.GetcategoryResponse;
 import kuit.server.dto.restaurant.PostRestaurantRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -38,9 +37,13 @@ public class RestaurantDao {
                         rs.getString("storeName"))
         );
     }
-    public List<GetRestaurant> getRestaurants() {
-        String sql = "select * from restaurants";
-        return jdbcTemplate.query(sql,
+    public List<GetRestaurant> getRestaurants(String restaurantname, String category, String status) {
+        String sql = "select * from restaurants where restaurantname like :restaurantname and category like :category and status=:status";
+;       Map<String, Object> param = Map.of(
+                "restaurantname", "%" + restaurantname + "%",
+                "category", "%" + category + "%",
+                "status", status);
+        return jdbcTemplate.query(sql,param,
                 (rs, rowNum) -> new GetRestaurant(
                         rs.getString("restaurantname"),
                         rs.getString("category"),

@@ -26,13 +26,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 @RequestMapping("/restaurants")
 public class RestaurantController {
     private final RestaurantService restaurantService;
-    @GetMapping("/categories")
-    public BaseResponse<List<GetcategoryResponse>> getCategory(@RequestParam(required = true,defaultValue = "")String category) {
-        return new BaseResponse<>(restaurantService.getCatogories(category));
-    }
     @GetMapping("")
-    public BaseResponse<List<GetRestaurant>> getRestaurant() {
-        return new BaseResponse<>(restaurantService.getRestaurants());
+    public BaseResponse<List<GetRestaurant>> getRestaurant(
+            @RequestParam(required = false, defaultValue = "") String restaurantname,
+            @RequestParam(required = false, defaultValue = "") String category,
+            @RequestParam(required = false, defaultValue = "active") String status
+    ) {
+        return new BaseResponse<>(restaurantService.getRestaurants(restaurantname,category,status));
     }
     @PostMapping("")
     public BaseResponse<Long> createRestaurant(@Validated @RequestBody PostRestaurantRequest postRestaurantRequest, BindingResult bindingResult){
