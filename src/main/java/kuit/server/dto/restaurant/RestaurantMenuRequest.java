@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 public class RestaurantMenuRequest {
 
     @NotBlank
-    @Length(max = 25, message = "menuName: 최대 {max}자리까지 가능합니다")
+//    @Length(max = 25, message = "menuName: 최대 {max}자리까지 가능합니다")
     private String menuName;
 
     @NotNull(message = "값을 입력해주세요")
