@@ -2,6 +2,7 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.controller.validator.PostMemberRequestValidator;
 import kuit.server.dto.member.response.GetMemberResponse;
 import kuit.server.dto.member.request.PostMemberRequest;
 import kuit.server.dto.member.response.PostMemberResponse;
@@ -11,7 +12,9 @@ import kuit.server.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +30,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 public class MemberController {
 
     private final MemberService memberService;
+    private final PostMemberRequestValidator postMemberRequestValidator;
 
+    @InitBinder
+    public void init(WebDataBinder webDataBinder){
+        //log.info("init binder {}",webDataBinder);
+        //webDataBinder.addValidators(postMemberRequestValidator);
+    }
     /**
      * 회원 조회
      */
@@ -45,6 +54,7 @@ public class MemberController {
     @PostMapping("")
     public BaseResponse<PostMemberResponse> signUp(@Validated @RequestBody PostMemberRequest postMemberRequest, BindingResult bindingResult) {
         log.info("[MemberController.signUp]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
