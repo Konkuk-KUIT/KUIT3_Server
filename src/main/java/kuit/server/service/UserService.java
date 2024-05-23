@@ -48,23 +48,25 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
-
         return new PostUserResponse(userId, jwt);
     }
 
-    public void modifyUserStatus_dormant(long userId) {
-        log.info("[UserService.modifyUserStatus_dormant]");
+    public void updateUserByEmail(String email, PostUserRequest postUserRequest) {
+        log.info("[UserService.updateUserByEmail");
 
-        int affectedRows = userDao.modifyUserStatus_dormant(userId);
+        String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
+        postUserRequest.resetPassword(encodedPassword);
+
+        int affectedRows = userDao.modifyUserByEmail(email, postUserRequest);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
 
-    public void modifyUserStatus_deleted(long userId) {
-        log.info("[UserService.modifyUserStatus_deleted]");
+    public void modifyUserStatus_inactive(long userId) {
+        log.info("[UserService.modifyUserStatus_inactive]");
 
-        int affectedRows = userDao.modifyUserStatus_deleted(userId);
+        int affectedRows = userDao.modifyUserStatus_inactive(userId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }

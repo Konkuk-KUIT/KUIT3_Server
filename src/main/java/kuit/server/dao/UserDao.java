@@ -25,14 +25,21 @@ public class UserDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
+
+    public int modifyUserByEmail(String email, PostUserRequest postUserRequest) {
+        String sql = "update user set name=:name, phone=:phone,address=:address,password=:password where email=:email";
+        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
+        return jdbcTemplate.update(sql, param);
+    }
+
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where email=:email and status in ('active'))";
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public boolean hasDuplicateName(String name) {
-        String sql = "select exists(select email from user where name=:name and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where name=:name and status in ('active'))";
         Map<String, Object> param = Map.of("name", name);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
@@ -48,19 +55,11 @@ public class UserDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public int modifyUserStatus_dormant(long userId) {
+    public int modifyUserStatus_inactive(long userId) {
         String sql = "update user set status=:status where userid=:userid";
         Map<String, Object> param = Map.of(
-                "status", "dormant",
-                "user_id", userId);
-        return jdbcTemplate.update(sql, param);
-    }
-
-    public int modifyUserStatus_deleted(long userId) {
-        String sql = "update user set status=:status where userid=:userid";
-        Map<String, Object> param = Map.of(
-                "status", "deleted",
-                "user_id", userId);
+                "status", "Inactive",
+                "userid", userId);
         return jdbcTemplate.update(sql, param);
     }
 

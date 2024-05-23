@@ -30,6 +30,7 @@ public class UserController {
     @PostMapping("")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
@@ -43,47 +44,58 @@ public class UserController {
     public BaseResponse<List<GetUserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "Active") String status) {
         log.info("[UserController.getUsers]");
-        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+        if (!status.equals("Active") && !status.equals("Inactive")) {
             throw new UserException(INVALID_USER_STATUS);
         }
         return new BaseResponse<>(userService.getUsers(name, email, status));
     }
 
     /**
-     * 회원 휴면
-     */
-    @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_dormant]");
-        userService.modifyUserStatus_dormant(userId);
-        return new BaseResponse<>(null);
-    }
-
-    /**
      * 회원 탈퇴
      */
-    @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_delete]");
-        userService.modifyUserStatus_deleted(userId);
+    @PatchMapping("/{userId}/inactive")
+    public BaseResponse<Object> modifyUserStatus_inactive(@PathVariable long userId) {
+        log.info("[UserController.modifyUserStatus_inactive]");
+        userService.modifyUserStatus_inactive(userId);
         return new BaseResponse<>(null);
     }
 
     /**
-     * 닉네임 변경
+     * 이름 변경
      */
     @PatchMapping("/{userId}/name")
     public BaseResponse<String> modifyName(@PathVariable long userId,
-                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
-        log.info("[UserController.modifyNickname]");
+                                           @Validated @RequestBody PatchNameRequest patchNameRequest,
+                                           BindingResult bindingResult) {
+
+        log.info("[UserController.,modifyName]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyName(userId, patchNicknameRequest.getNickname());
+
+        userService.modifyName(userId, patchNameRequest.getName());
         return new BaseResponse<>(null);
     }
 
+    /**
+     * 이메일로 조회한 회원 정보 수정
+     */
 
+    @PutMapping("/{email}")
+    public BaseResponse<String> updateUserByEmail(@PathVariable String email,
+                                                  @Validated @RequestBody PostUserRequest postUserRequest,
+                                                  BindingResult bindingResult) {
+        log.info("[UserController.updateUserByEmail]");
+
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+
+        userService.updateUserByEmail(email, postUserRequest);
+        return new BaseResponse<>(null);
+
+    }
 }

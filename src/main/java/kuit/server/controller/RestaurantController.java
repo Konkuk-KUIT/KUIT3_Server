@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
 
@@ -31,7 +32,16 @@ public class RestaurantController {
     @GetMapping("")
     public BaseResponse<List<GetRestaurantResponse>> getRestaurants(
             @RequestParam(required = false, defaultValue = "") String phone,
-            @RequestParam(required = false, defaultValue = "") String name) {
-        return new BaseResponse<>(restaurantService.getRestaurants(name, phone));
+            @RequestParam(required = false, defaultValue = "") String name,
+            @RequestParam(required = false, defaultValue = "min_order_amount") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String orderBy) {
+
+        return new BaseResponse<>(restaurantService.getRestaurants(name, phone, sortBy, orderBy));
     }
+
+    @GetMapping("/categories")
+    public BaseResponse<Set<String>> getCategories() {
+        return new BaseResponse<>(restaurantService.getCategories());
+    }
+
 }
