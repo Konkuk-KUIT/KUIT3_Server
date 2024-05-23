@@ -32,11 +32,11 @@ public class MemberController {
     private final MemberService memberService;
     private final PostMemberRequestValidator postMemberRequestValidator;
 
-    @InitBinder
+    /*@InitBinder
     public void init(WebDataBinder webDataBinder){
-        //log.info("init binder {}",webDataBinder);
-        //webDataBinder.addValidators(postMemberRequestValidator);
-    }
+        log.info("init binder {}",webDataBinder);
+        webDataBinder.addValidators(postMemberRequestValidator);
+    }*/
     /**
      * 회원 조회
      */
