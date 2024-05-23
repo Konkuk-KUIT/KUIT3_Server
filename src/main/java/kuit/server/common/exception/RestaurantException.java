@@ -1,7 +1,9 @@
 package kuit.server.common.exception;
 
 import kuit.server.common.response.status.ResponseStatus;
+import lombok.Getter;
 
+@Getter
 public class RestaurantException extends RuntimeException{
     private final ResponseStatus exceptionStatus;
 

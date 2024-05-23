@@ -1,7 +1,6 @@
 package kuit.server.controller;
 
 import kuit.server.common.exception.RestaurantException;
-import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.restaurant.MenuUpdateRequest;
 import kuit.server.dto.restaurant.RestaurantMenuRequest;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_MENU_VALUE;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @RestController
