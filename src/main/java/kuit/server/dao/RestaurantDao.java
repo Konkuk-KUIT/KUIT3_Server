@@ -40,7 +40,6 @@ public class RestaurantDao {
     }
     public List<GetRestaurant> getRestaurants() {
         String sql = "select * from restaurants";
-
         return jdbcTemplate.query(sql,
                 (rs, rowNum) -> new GetRestaurant(
                         rs.getString("restaurantname"),
@@ -49,11 +48,16 @@ public class RestaurantDao {
         );
     }
     public long createRestaurant(PostRestaurantRequest postRestaurantRequest){
-        String sql = "insert into restaurants(restaurantname,category,min_order_amount,status) values(:restaurantname,:category,:min_order_amount,:status)";
+        String sql = "insert into restaurants(restaurantname,category,min_order_amount) values(:restaurantname,:category,:min_order_amount)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postRestaurantRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql,param,keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+    public boolean hasDuplicateRestaurantName(String restaurantname) {
+        String sql = "select exists(select restaurantId from restaurants where restaurantname=:restaurantname)";
+        Map<String, Object> param = Map.of("restaurantname", restaurantname);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 }
