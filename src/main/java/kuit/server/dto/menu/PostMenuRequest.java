@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 public class PostMenuRequest {
 
     @NotBlank
-    @Length(max = 1)
+    @Length(max = 1, message = "메뉴이름은 적어도 하나의 문자 이상을 입력해야 합니다.")
     private String menu_name;
 
     private long price;
@@ -27,8 +27,4 @@ public class PostMenuRequest {
 
     private String menu_status;
 
-//    private String created_date = "This is not requeried";
-//    private String modified_date = "This is not requeried";
-//
-//    private long restaurantId;
 }
