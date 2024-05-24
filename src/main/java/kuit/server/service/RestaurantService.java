@@ -40,13 +40,10 @@ public class RestaurantService {
 
     public Long addMenu(long restaurantId, PostRestaurantMenuRequest postRestaurantMenuRequest) {
         log.info("addMenu :: ");
-        if(!restaurantDao.existsWithId(restaurantId)){
-           throw new RestaurantException(RESTAURANT_NOT_FOUND);
-        }
 
-        if(menuDao.hasDuplicateMenu(restaurantId, postRestaurantMenuRequest.getName())){
-            throw new RestaurantException(DUPLICATE_MENU);
-        }
+        validateRestaurant(restaurantId);
+
+        validateDuplicateMenu(restaurantId, postRestaurantMenuRequest.getName());
 
         PostMenuRequest menuRequest = new PostMenuRequest(
                 postRestaurantMenuRequest.getName(),
@@ -56,6 +53,18 @@ public class RestaurantService {
                 restaurantId
         );
         return menuDao.createMenu(menuRequest);
+    }
+
+    private void validateDuplicateMenu(long restaurantId, String name) {
+        if(menuDao.hasDuplicateMenu(restaurantId, name)){
+            throw new RestaurantException(DUPLICATE_MENU);
+        }
+    }
+
+    private void validateRestaurant(long restaurantId) {
+        if(!restaurantDao.existsWithId(restaurantId)){
+            throw new RestaurantException(RESTAURANT_NOT_FOUND);
+        }
     }
 
     public List<GetMenuResponse> getMenus(long restaurantId) {
