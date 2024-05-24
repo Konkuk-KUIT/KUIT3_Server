@@ -12,7 +12,7 @@ public class GetStoreResponse {
     private String name;
     private String address;
     private String foodCategory;
-    private int min_delivery_price;
+    private int min_delivery_priced;
     private String status;
     private String phoneNumber;
 }
