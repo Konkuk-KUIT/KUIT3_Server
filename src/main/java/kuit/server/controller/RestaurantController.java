@@ -2,16 +2,16 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.menu.GetMenuResponse;
+import kuit.server.dto.menu.PostMenuRequest;
 import kuit.server.dto.restaurant.GetCategoryResponse;
 import kuit.server.dto.restaurant.GetStoreResponse;
-import kuit.server.dto.user.GetUserResponse;
+import kuit.server.service.MenuService;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +24,7 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.INV
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+    private final MenuService menuService;
 
     @RequestMapping("")
     public BaseResponse<List<GetStoreResponse>> getStores() {
@@ -41,10 +42,20 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getRestaurants());
     }
 
-    @RequestMapping("/{categoryId}")
+    @RequestMapping("/categories/{categoryId}")
     public BaseResponse<List<GetStoreResponse>> getSpecificCategories(@PathVariable("categoryId") long categoryId) {
         log.info("[RestaurantController.getSpecificCategories]");
         return new BaseResponse<>(restaurantService.getSpecificCategories(categoryId));
+    }
+
+    @GetMapping("/{restaurantId}/menus")
+    public BaseResponse<List<GetMenuResponse>> getMenus(
+            @PathVariable("restaurantId") long restaurantId) {
+        log.info("[RestaurantsMenuController.getMenus]");
+        if (restaurantId <= 0) {
+            throw new UserException(INVALID_USER_STATUS);
+        }
+        return new BaseResponse<>(menuService.getMenus(restaurantId));
     }
 
 }
