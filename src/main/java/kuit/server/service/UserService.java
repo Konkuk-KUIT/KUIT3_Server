@@ -1,17 +1,20 @@
 package kuit.server.service;
 
-import kuit.server.common.exception.DatabaseException;
+import kuit.server.common.exception.BadRequestException;
 import kuit.server.common.exception.UserException;
-import kuit.server.dao.UserDao;
+import kuit.server.domain.User;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
 import kuit.server.dto.user.PostUserResponse;
+import kuit.server.repository.UserRepository;
+import kuit.server.type.Status;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
@@ -20,10 +23,10 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-  private final UserDao userDao;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
+
+  private final UserRepository userRepository;
 
   public PostUserResponse signUp(PostUserRequest postUserRequest) {
     log.info("[UserService.createUser]");
@@ -40,73 +43,63 @@ public class UserService {
     postUserRequest.resetPassword(encodedPassword);
 
     // TODO: 3. DB insert & userId 반환
-    long userId = userDao.createUser(postUserRequest);
+    User savedUser = userRepository.save(User.from(postUserRequest));
 
     // TODO: 4. JWT 토큰 생성
-    String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
+    String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), savedUser.getUserId());
 
-    return new PostUserResponse(userId, jwt);
+    return new PostUserResponse(savedUser.getUserId(), jwt);
   }
 
-  public void modifyUserStatus_active(long userId) {
-    log.info("[UserService.modifyUserStatus_active]");
+  public void modifyUserStatus(long userId, String status) {
+    log.info("[UserService.modifyUserStatus]");
 
-    int affectedRows = userDao.modifyUserStatus_active(userId);
-    if (affectedRows != 1) {
-      throw new DatabaseException(DATABASE_ERROR);
-    }
-  }
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-  public void modifyUserStatus_dormant(long userId) {
-    log.info("[UserService.modifyUserStatus_dormant]");
+    Status selectedStatus = Status.get(status)
+      .orElseThrow(() -> new BadRequestException(BAD_REQUEST));
 
-    int affectedRows = userDao.modifyUserStatus_dormant(userId);
-    if (affectedRows != 1) {
-      throw new DatabaseException(DATABASE_ERROR);
-    }
+    user.setStatus(selectedStatus.toString().toLowerCase());
+    userRepository.save(user);
   }
 
   public GetUserResponse getUserInfo(long userId) {
     log.info("[UserService.getUserInfo]");
-    GetUserResponse response = userDao.findById(userId);
-    if (response == null) {
-      throw new UserException(USER_NOT_FOUND);
-    }
-    return response;
-  }
-
-  public void modifyUserStatus_deleted(long userId) {
-    log.info("[UserService.modifyUserStatus_deleted]");
-
-    int affectedRows = userDao.modifyUserStatus_deleted(userId);
-    if (affectedRows != 1) {
-      throw new DatabaseException(DATABASE_ERROR);
-    }
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    return GetUserResponse.from(user);
   }
 
   public void modifyNickname(long userId, String nickname) {
     log.info("[UserService.modifyNickname]");
 
     validateNickname(nickname);
-    int affectedRows = userDao.modifyNickname(userId, nickname);
-    if (affectedRows != 1) {
-      throw new DatabaseException(DATABASE_ERROR);
-    }
+    User user = userRepository.findById(userId)
+      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+
+    user.setNickname(nickname);
+    userRepository.save(user);
   }
 
   public List<GetUserResponse> getUsers(String nickname, String email, String status) {
     log.info("[UserService.getUsers]");
-    return userDao.getUsers(nickname, email, status);
+    List<GetUserResponse> userList = new ArrayList<>();
+    List<User> users = userRepository.getUsers(nickname, email, status);
+    users.forEach(x -> {
+      userList.add(GetUserResponse.from(x));
+    });
+    return userList;
   }
 
   private void validateEmail(String email) {
-    if (userDao.hasDuplicateEmail(email)) {
+    if (userRepository.existsByEmail(email)) {
       throw new UserException(DUPLICATE_EMAIL);
     }
   }
 
   private void validateNickname(String nickname) {
-    if (userDao.hasDuplicateNickName(nickname)) {
+    if (userRepository.existsByNickname(nickname)) {
       throw new UserException(DUPLICATE_NICKNAME);
     }
   }
