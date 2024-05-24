@@ -37,7 +37,7 @@ public class RestaurantDao {
     }
 
     public List<GetRestaurantResponse> findRestaurantsByCategory(int categoryId) {
-        String sql = "select name, address, phone_number, business_hour, closed_day, category, minimum_order_price, status " +
+        String sql = "select * " +
                 "from restaurant where category = :category;";
         Map<String, Integer> param = Map.of("category", categoryId);
 
@@ -50,7 +50,9 @@ public class RestaurantDao {
                         rs.getString("closed_day"),
                         Integer.parseInt(rs.getString("category")),
                         Integer.parseInt(rs.getString("minimum_order_price")),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        Integer.parseInt(rs.getString("star_rate")),
+                        Integer.parseInt(rs.getString("delivery_fee"))
                 )
         );
     }
@@ -77,5 +79,37 @@ public class RestaurantDao {
                 "id", restaurantId
         );
         return jdbcTemplate.update(sql, param);
+    }
+
+    public List<GetRestaurantResponse> search(String keyword, String minStar, String maxDeliveryFee) {
+        String sql = "SELECT * " +
+                "FROM restaurant WHERE 1=1";
+
+        if(keyword != null && !keyword.isEmpty()){
+            sql += " AND name LIKE '%" + keyword + "%'";
+        }
+        if(minStar != null && !minStar.isEmpty()){
+            sql += " AND star_rate >=" + minStar;
+        }
+        if(maxDeliveryFee != null && !maxDeliveryFee.isEmpty()){
+            sql += " AND delivery_fee <= " + maxDeliveryFee;
+        }
+
+        log.info("restaurantService.search :: sql = " + sql);
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new GetRestaurantResponse(
+                        rs.getString("name"),
+                        rs.getString("address"),
+                        rs.getString("phone_number"),
+                        rs.getString("business_hour"),
+                        rs.getString("closed_day"),
+                        Integer.parseInt(rs.getString("category")),
+                        Integer.parseInt(rs.getString("minimum_order_price")),
+                        rs.getString("status"),
+                        Integer.parseInt(rs.getString("star_rate")),
+                        Integer.parseInt(rs.getString("delivery_fee"))
+                )
+        );
     }
 }

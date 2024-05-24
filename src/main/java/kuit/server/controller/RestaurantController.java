@@ -37,7 +37,7 @@ public class RestaurantController {
 
     /*
     식당에서 메뉴 추가
-    * */
+    */
     @PostMapping("/{restaurantId}/menus")
     public BaseResponse<Object> addMenu(@PathVariable long restaurantId,
                                         @RequestBody PostRestaurantMenuRequest postRestaurantMenuRequest){
@@ -60,6 +60,7 @@ public class RestaurantController {
         restaurantService.modifyStatusAsClosed(restaurantId);
         return new BaseResponse<>(null);
     }
+
     /*
     식당 영업시간 문구 수정
      */
@@ -69,6 +70,19 @@ public class RestaurantController {
         log.info("[RestaurantController.modifyBusinnessHour]");
         restaurantService.modifyBusinnessHour(restaurantId, patchBusinessHourRequest.getBusiness_hour());
         return new BaseResponse<>(null);
+    }
+
+    /*
+    필터링 조건으로 식당 검색
+     */
+    @GetMapping("")
+    public BaseResponse<List<GetRestaurantResponse>> searchRestraurants(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "min_star", required = false) Integer min_star,
+            @RequestParam(value = "max_delivery_fee", required = false) String max_delivery_fee
+    ){
+        return new BaseResponse<>(restaurantService.search(keyword, min_star, max_delivery_fee));
+
     }
 
 }

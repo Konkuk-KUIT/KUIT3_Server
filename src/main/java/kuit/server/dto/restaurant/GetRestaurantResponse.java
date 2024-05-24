@@ -16,4 +16,6 @@ public class GetRestaurantResponse {
     int category;
     int minimum_order_price;
     String status;
+    int star_rate;
+    int delivery_fee;
 }

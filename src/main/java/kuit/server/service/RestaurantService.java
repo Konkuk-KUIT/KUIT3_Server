@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @Slf4j
 @Service
@@ -58,5 +61,12 @@ public class RestaurantService {
 
     public void modifyBusinnessHour(Long restaurantId, String businessHour) {
         restaurantDao.modifyBusinessHour(restaurantId, businessHour);
+    }
+
+    public List<GetRestaurantResponse> search(String keyword, Integer minStar, String maxDeliveryFee) {
+        if(minStar != null){
+            return restaurantDao.search(keyword, minStar.toString(), maxDeliveryFee);
+        }
+        return restaurantDao.search(keyword, null, maxDeliveryFee);
     }
 }
