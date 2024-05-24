@@ -37,6 +37,11 @@ public class MenuDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public boolean hasInvalidMenuPrice(int price) {
+        // 가격이 음수이면 무조건 유효하지 않음
+        return price < 0;
+    }
+
     public int modifyPrice(long menuId, int price) {
         String sql = "update menu set price=:price where menuId=:menuId";
         Map<String, Object> param = Map.of(
@@ -69,4 +74,12 @@ public class MenuDao {
                 "menuId", menuId);
         return jdbcTemplate.update(sql, param);
     }
+
+    public boolean hasDuplicateMenu(String name) {
+        String sql = "select exists(select name from menu where name=:name and status in ('일반', 'deleted'))";
+        Map<String, Object> param = Map.of("name", name);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
+    }
+
+
 }

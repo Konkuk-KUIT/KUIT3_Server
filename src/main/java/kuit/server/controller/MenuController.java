@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.MenuException;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.menu.GetMenuResponse;
@@ -20,9 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
+
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_MENU_VALUE;
 
 @Slf4j
 @RestController
@@ -34,8 +35,9 @@ public class MenuController {
     public BaseResponse<PostMenuResponse> registerMenu(@Validated @RequestBody PostMenuRequest postMenuRequest, BindingResult bindingResult) {
         log.info("[MenuController.registerMenu]");
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new MenuException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
         }
+
         return new BaseResponse<>(menuService.registerMenu(postMenuRequest));
     }
     @PatchMapping("/{menuId}/price")
@@ -43,7 +45,7 @@ public class MenuController {
                                             @Validated @RequestBody PatchPriceRequest patchPriceRequest, BindingResult bindingResult) {
         log.info("[MenuController.modifyPrice]");
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new MenuException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
         }
         menuService.modifyPrice(menuId, patchPriceRequest.getPrice());
         return new BaseResponse<>(null);
