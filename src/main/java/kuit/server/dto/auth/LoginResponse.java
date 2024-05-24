@@ -10,4 +10,5 @@ public class LoginResponse {
     private long userId;
     private String jwt;
 
+    
 }
