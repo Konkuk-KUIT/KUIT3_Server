@@ -1,5 +1,6 @@
 package kuit.server.mydao;
 
+import kuit.server.common.exception.UserException;
 import kuit.server.mydto.member.PostMemberReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -10,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -76,6 +78,17 @@ public class MemberDao {
         log.info("MemberDao.updateUserPassword");
         String sql = "update user set password = :password where user_id = :userId";
         Map<String, Object> param = Map.of("password", password, "userId", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    public int changeAll(long userId, PostMemberReq postMemberReq) {
+        log.info("MemberDao.changeAll");
+        String sql = "update user set password = :password, email = :email, phone_number = :phone_number, " +
+                "nickname = :nickname, profile_image = :profile_image where user_id = :userId;";
+
+        Map<String, Object> param = Map.of("password", postMemberReq.getPassword(), "email", postMemberReq.getEmail(),
+                "phone_number", postMemberReq.getPhoneNumber(), "nickname", postMemberReq.getNickName(),
+                "profile_image", postMemberReq.getProfileImage(), "userId", userId);
         return jdbcTemplate.update(sql, param);
     }
 }

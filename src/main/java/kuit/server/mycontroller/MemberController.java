@@ -1,5 +1,6 @@
 package kuit.server.mycontroller;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.mydto.member.*;
@@ -26,7 +27,7 @@ public class MemberController {
         log.info("MemberController.signUp");
 
         if(bindingResult.hasErrors()) {
-            throw new RuntimeException();
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(memberService.signUp(postMemberReq));
     }
@@ -41,20 +42,29 @@ public class MemberController {
     }
 
     @PatchMapping("/{userId}/email")
-    public BaseResponse<String> updateEmail(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
+    public BaseResponse<String> updateEmail(@PathVariable long userId, @Validated @RequestBody PatchEmailReq patchEmailReq, BindingResult bindingResult) {
         log.info("MemberController.updateEmail");
         if(bindingResult.hasErrors()) {
-            throw new RuntimeException();
+            throw new RuntimeException(getErrorMessages(bindingResult));
         }
-        return new BaseResponse<>(memberService.updateEmail(userId, postMemberReq));
+        return new BaseResponse<>(memberService.updateEmail(userId, patchEmailReq));
     }
 
     @PatchMapping("/{userId}/password")
-    public BaseResponse<String> updatePassword(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
+    public BaseResponse<String> updatePassword(@PathVariable long userId, @Validated @RequestBody PatchPasswordReq patchPasswordReq, BindingResult bindingResult) {
         log.info("MemberController.updatePassword");
         if(bindingResult.hasErrors()) {
-            throw new RuntimeException();
+            throw new RuntimeException(getErrorMessages(bindingResult));
         }
-        return new BaseResponse<>(memberService.updatePassword(userId, postMemberReq));
+        return new BaseResponse<>(memberService.updatePassword(userId, patchPasswordReq));
+    }
+
+    @PutMapping("/{userId}")
+    public BaseResponse<String> updateAllInfo(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
+        log.info("MemberController.updateAllInfo");
+        if(bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE);
+        }
+        return new BaseResponse<>(memberService.updateAllInfo(userId, postMemberReq));
     }
 }

@@ -2,10 +2,7 @@ package kuit.server.myservice;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.mydao.MemberDao;
-import kuit.server.mydto.member.PostLoginReq;
-import kuit.server.mydto.member.PostLoginResp;
-import kuit.server.mydto.member.PostMemberReq;
-import kuit.server.mydto.member.PostMemberResp;
+import kuit.server.mydto.member.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -24,18 +21,19 @@ public class MemberService {
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
 
-    public String updatePassword(long userId, PostMemberReq postMemberReq) {
+    public String updatePassword(long userId, PatchPasswordReq patchPasswordReq) {
         log.info("MemberService.updatePassword");
-        int result = memberDao.updateUserPassword(userId, postMemberReq.getPassword());
+        int result = memberDao.updateUserPassword(userId, patchPasswordReq.getPassword());
         if(result == 1) {
             return "complete changing password";
         }
         return "failed to change password";
     }
 
-    public String updateEmail(long userId, PostMemberReq postMemberReq) {
+    public String updateEmail(long userId, PatchEmailReq patchEmailReq) {
         log.info("MemberService.updateEmail");
-        int result = memberDao.updateUserEmail(userId, postMemberReq.getEmail());
+        validateEmail(patchEmailReq.getEmail());
+        int result = memberDao.updateUserEmail(userId, patchEmailReq.getEmail());
         if(result == 1) {
             return "complete changing Email";
         }
@@ -58,13 +56,6 @@ public class MemberService {
         return new PostLoginResp(userId, jwt);
     }
 
-    private void validatePassword(String password, long userId) {
-        String DBpassword = memberDao.getPasswordByUserId(userId);
-        if(!Objects.equals(password, DBpassword)) {
-            throw new UserException(PASSWORD_NO_MATCH);
-        }
-    }
-
     public PostMemberResp signUp(PostMemberReq postMemberReq) {
         log.info("MemberService.signUp");
 
@@ -78,6 +69,13 @@ public class MemberService {
         return new PostMemberResp(userId, jwt);
     }
 
+    private void validatePassword(String password, long userId) {
+        String DBpassword = memberDao.getPasswordByUserId(userId);
+        if(!Objects.equals(password, DBpassword)) {
+            throw new UserException(PASSWORD_NO_MATCH);
+        }
+    }
+
     private void validateNickName(String nickName) {
         if (memberDao.hasDuplicateNickName(nickName)) {
             throw new UserException(DUPLICATE_NICKNAME);
@@ -88,5 +86,15 @@ public class MemberService {
         if (memberDao.hasDuplicateEmail(email)) {
             throw new UserException(DUPLICATE_EMAIL);
         }
+    }
+
+    public String updateAllInfo(long userId, PostMemberReq postMemberReq) {
+        log.info("MemberService.updateAllInfo");
+        validateNickName(postMemberReq.getNickName());
+        validateEmail(postMemberReq.getEmail());
+        if (memberDao.changeAll(userId, postMemberReq) != 1) {
+            return "failed to change user Info";
+        }
+        return "complete changing user Info";
     }
 }
