@@ -21,6 +21,6 @@ public class MenuExceptionControllerAdvice {
     @ExceptionHandler(MenuException.class)
     public BaseErrorResponse handle_MenuException(MenuException e) {
         log.error("[handle_MenuException]", e);
-        return new BaseErrorResponse(INVALID_MENU_STATUS, e.getMessage());
+        return new BaseErrorResponse(e.getExceptionStatus(), e.getMessage());
     }
 }
