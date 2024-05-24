@@ -34,4 +34,5 @@ public class PostMemberRequest {
     public Member toEntity(){
         return new Member(this.memberId,this.name,this.nickname,this.password,this.phoneNum,this.email);
     }
+
 }
