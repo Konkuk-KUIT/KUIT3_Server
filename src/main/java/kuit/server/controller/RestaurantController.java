@@ -1,14 +1,21 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.RestaurantException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.menu.GetMenuResponse;
 import kuit.server.dto.restaurant.*;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Binding;
 import java.util.List;
+
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_RESTAURANT_VALUE;
+import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
 @RestController
@@ -21,8 +28,15 @@ public class RestaurantController {
     신규 식당 등록
      */
     @PostMapping
-    public BaseResponse<PostRestaurantResponse> register(@RequestBody PostRestaurantRequest postRestaurantRequest){
+    public BaseResponse<PostRestaurantResponse> register(
+            @Validated @RequestBody PostRestaurantRequest postRestaurantRequest,
+            BindingResult bindingResult){
         log.info("[RestaurantController.register]");
+
+        if(bindingResult.hasErrors()){
+            throw new RestaurantException(INVALID_RESTAURANT_VALUE, getErrorMessages(bindingResult));
+        }
+
         PostRestaurantResponse result = restaurantService.createRestaurant(postRestaurantRequest);
         return new BaseResponse<PostRestaurantResponse>(result);
     }

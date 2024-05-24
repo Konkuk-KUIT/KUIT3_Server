@@ -49,10 +49,10 @@ public class RestaurantService {
     }
 
     public List<GetMenuResponse> getMenus(long restaurantId) {
-        if(restaurantDao.doesExistById(restaurantId)){
+//        if(restaurantDao.doesExistById(restaurantId)){
             return menuDao.getMenus(restaurantId);
-        }
-        return null;
+//        }
+//        return null;
     }
 
     public void modifyStatusAsClosed(Long restaurantId) {

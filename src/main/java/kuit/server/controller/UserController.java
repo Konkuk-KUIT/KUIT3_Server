@@ -97,15 +97,5 @@ public class UserController {
         userService.modifyProfile_image(userId, patchProfileImageRequest.getProfile_image());
         return new BaseResponse<>(null);
     }
-//
-//    }
-
-    /*
-    회원 주소 추가
-    */
-//    @PostMapping("/{userId}/addresses")
-//    public BaseResponse<Object> createAddress(@PathVariable Long userId, String ){
-//
-//    }
 
 }
