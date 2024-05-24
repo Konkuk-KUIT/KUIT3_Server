@@ -52,7 +52,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     INVALID_RESTAURANT_VALUE(6000, HttpStatus.BAD_REQUEST.value(), "음식점 등록 정보를 확인하세요."),
     RESTAURANT_NOT_FOUND(6001, HttpStatus.BAD_REQUEST.value(), "음식점을 찾을 수 없습니다."),
-    INVALID_MENU_VALUE(6002, HttpStatus.BAD_REQUEST.value(), "메뉴 등록 정보를 확인하세요.");
+    INVALID_MENU_VALUE(6002, HttpStatus.BAD_REQUEST.value(), "메뉴 등록 정보를 확인하세요."),
+    INVALID_FOOD_VALUE(6003, HttpStatus.BAD_REQUEST.value(), "메뉴 이름이 잘못되었습니다");
     // 레스토랑 관련 또 다른 예시가 무엇이 있을까?
 
 
