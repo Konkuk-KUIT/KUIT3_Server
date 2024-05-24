@@ -51,7 +51,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      * 6000: Restaurant 오류
      */
     INVALID_RESTAURANT_VALUE(6000, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 레스토랑 값입니다."),
-    INVALID_CATEGORY(6001, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 카테고리입니다.");
+    INVALID_CATEGORY(6001, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 카테고리입니다."),
+    /**
+     * 7000: Order 오류
+     */
+    INVALID_ORDER_VALUE(7000, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 주문 값입니다.");
 
     private final int code;
     private final int status;
