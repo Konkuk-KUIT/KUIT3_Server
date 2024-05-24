@@ -30,7 +30,7 @@ public class UserDao {
     }
 
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where email=:email and status in ('일단', 'deleted'))";
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
