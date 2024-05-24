@@ -51,4 +51,13 @@ public class RestaurantDao {
                 rs.getString("status")
         ));
     }
+
+    public boolean existsCategory(Long categoryId) {
+        String sql = "SELECT COUNT(*) FROM category WHERE categoryId = :categoryId";
+        Map<String, Object> params = new HashMap<>();
+        params.put("categoryId", categoryId);
+        Integer count = jdbcTemplate.queryForObject(sql, params, Integer.class);
+        return count != null && count > 0;
+    }
+
 }
