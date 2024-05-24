@@ -51,7 +51,10 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /*
     6000 : Restaurant 오류
      */
-    INVALID_RESTAURANT_VALUE(6000, HttpStatus.BAD_REQUEST.value(), "식당 등록 요청에서 잘못된 값이 존재합니다.");
+    INVALID_RESTAURANT_VALUE(6000, HttpStatus.BAD_REQUEST.value(), "식당 등록 요청에서 잘못된 값이 존재합니다."),
+    RESTAURANT_NOT_FOUND(6001, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 식당입니다."),
+
+    DUPLICATE_MENU(6002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 메뉴입니다.");
 
     private final int code;
     private final int status;

@@ -1,5 +1,6 @@
 package kuit.server.service;
 
+import kuit.server.common.exception.RestaurantException;
 import kuit.server.dao.MenuDao;
 import kuit.server.dao.RestaurantDao;
 import kuit.server.dto.menu.GetMenuResponse;
@@ -12,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.ReadOnlyFileSystemException;
 import java.util.List;
 import java.util.Map;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Map;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_MENU;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.RESTAURANT_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -35,17 +39,23 @@ public class RestaurantService {
     }
 
     public Long addMenu(long restaurantId, PostRestaurantMenuRequest postRestaurantMenuRequest) {
-        if(restaurantDao.doesExistById(restaurantId)){
-            PostMenuRequest menuRequest = new PostMenuRequest(
-                    postRestaurantMenuRequest.getName(),
-                    postRestaurantMenuRequest.getImage_url(),
-                    postRestaurantMenuRequest.getDescription(),
-                    postRestaurantMenuRequest.getPrice(),
-                    restaurantId
-            );
-            return menuDao.createMenu(menuRequest);
+        log.info("addMenu :: ");
+        if(!restaurantDao.existsWithId(restaurantId)){
+           throw new RestaurantException(RESTAURANT_NOT_FOUND);
         }
-        return null;
+
+        if(menuDao.hasDuplicateMenu(restaurantId, postRestaurantMenuRequest.getName())){
+            throw new RestaurantException(DUPLICATE_MENU);
+        }
+
+        PostMenuRequest menuRequest = new PostMenuRequest(
+                postRestaurantMenuRequest.getName(),
+                postRestaurantMenuRequest.getImage_url(),
+                postRestaurantMenuRequest.getDescription(),
+                postRestaurantMenuRequest.getPrice(),
+                restaurantId
+        );
+        return menuDao.createMenu(menuRequest);
     }
 
     public List<GetMenuResponse> getMenus(long restaurantId) {

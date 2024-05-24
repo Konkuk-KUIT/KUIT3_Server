@@ -77,4 +77,17 @@ public class MenuDao {
 
         return jdbcTemplate.update(sql, param);
     }
+
+    public boolean hasDuplicateMenu(Long restaurantId, String name) {
+        log.info("hasDuplicateMenu:: ");
+
+        String sql = "SELECT EXISTS(SELECT * FROM menu WHERE restaurant_id = :restaurant_id AND name = :name)";
+
+        Map<String, Object> params = Map.of(
+                "restaurant_id", restaurantId,
+                "name", name
+        );
+
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, params, boolean.class));
+    }
 }

@@ -10,5 +10,5 @@ import lombok.ToString;
 @AllArgsConstructor
 
 public class PostRestaurantResponse {
-    Long restaurantId;
+    private Long restaurantId;
 }
