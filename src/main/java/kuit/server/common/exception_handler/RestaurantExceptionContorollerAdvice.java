@@ -20,6 +20,6 @@ public class RestaurantExceptionContorollerAdvice {
     @ExceptionHandler(RestaurantException.class)
     public BaseErrorResponse handle_RestaurantException(RestaurantException e) {
         log.error("[handle_RestaurantException]", e);
-        return new BaseErrorResponse(INVALID_RESTAURANT_VALUE, e.getMessage());
+        return new BaseErrorResponse(e.getExceptionStatus(), e.getMessage());
     }
 }
