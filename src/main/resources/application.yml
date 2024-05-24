@@ -109,3 +109,11 @@ spring:
 
   messages:
     basename: errors
+
+---
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        jdbc: trace
