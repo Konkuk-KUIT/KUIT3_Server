@@ -13,7 +13,7 @@ import org.springframework.lang.Nullable;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PatchStoreRequest {
+public class  PatchStoreRequest {
 
   @Max(value = 24, message = "openTime: 최대 {max}시 까지 가능합니다")
   private Integer openTime;
