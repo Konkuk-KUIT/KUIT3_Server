@@ -22,7 +22,7 @@ public class StoreExceptionControllerAdvice {
     @ExceptionHandler(StoreException.class)
     public BaseErrorResponse handle_StoreException(StoreException e) {
         log.error("[handle_StoreException]", e);
-        return new BaseErrorResponse(INVALID_STORE_VALUE, e.getMessage());
+        return new BaseErrorResponse(e.getExceptionStatus(), e.getMessage());
     }
 
 }
