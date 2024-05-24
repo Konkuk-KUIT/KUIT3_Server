@@ -16,7 +16,7 @@ public class RestaurantReq {
     private String name;
     @Nullable
     private long min_price;
-    @NotBlank
+    @NotBlank(message = "{NotBlank}")
     private String category;
     @Nullable
     private String pic_URL;

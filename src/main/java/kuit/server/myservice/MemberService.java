@@ -1,5 +1,6 @@
 package kuit.server.myservice;
 
+import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
 import kuit.server.mydao.MemberDao;
 import kuit.server.mydto.member.*;
@@ -24,20 +25,20 @@ public class MemberService {
     public String updatePassword(long userId, PatchPasswordReq patchPasswordReq) {
         log.info("MemberService.updatePassword");
         int result = memberDao.updateUserPassword(userId, patchPasswordReq.getPassword());
-        if(result == 1) {
-            return "complete changing password";
+        if(result != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
         }
-        return "failed to change password";
+        return "complete changing password";
     }
 
     public String updateEmail(long userId, PatchEmailReq patchEmailReq) {
         log.info("MemberService.updateEmail");
         validateEmail(patchEmailReq.getEmail());
         int result = memberDao.updateUserEmail(userId, patchEmailReq.getEmail());
-        if(result == 1) {
-            return "complete changing Email";
+        if(result != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
         }
-        return "failed to change Email";
+        return "complete changing Email";
     }
 
     public PostLoginResp logIn(PostLoginReq loginRequest) {
@@ -93,7 +94,7 @@ public class MemberService {
         validateNickName(postMemberReq.getNickName());
         validateEmail(postMemberReq.getEmail());
         if (memberDao.changeAll(userId, postMemberReq) != 1) {
-            return "failed to change user Info";
+            throw new DatabaseException(DATABASE_ERROR);
         }
         return "complete changing user Info";
     }
