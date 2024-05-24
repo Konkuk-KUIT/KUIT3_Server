@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetMenuResponse {
-    String name;
-    String image_url;
-    String description;
-    int price;
-    long restaurant_id;
+    private String name;
+    private String image_url;
+    private String description;
+    private int price;
+    private long restaurant_id;
 }

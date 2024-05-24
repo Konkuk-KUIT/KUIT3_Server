@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 public class GetRestaurantResponse {
-    String name;
-    String address;
-    String phone_number;
-    String business_hour;
-    String closed_day;
-    int category;
-    int minimum_order_price;
-    String status;
-    int star_rate;
-    int delivery_fee;
+    private String name;
+    private String address;
+    private String phone_number;
+    private String business_hour;
+    private String closed_day;
+    private int category;
+    private int minimum_order_price;
+    private String status;
+    private int star_rate;
+    private int delivery_fee;
 }

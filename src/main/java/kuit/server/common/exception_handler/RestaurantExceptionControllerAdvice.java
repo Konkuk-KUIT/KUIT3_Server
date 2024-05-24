@@ -24,5 +24,4 @@ public class RestaurantExceptionControllerAdvice {
         log.error("[handle_UserException]", e);
         return new BaseErrorResponse(INVALID_RESTAURANT_VALUE, e.getMessage());
     }
-
 }

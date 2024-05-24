@@ -57,7 +57,8 @@ public class RestaurantDao {
         );
     }
 
-    public boolean doesExistById(long restaurantId) {
+    public boolean existsWithId(long restaurantId) {
+        log.info("exists:: ");
         String sql = "select exists(select name from restaurant where restaurant_id = :restaurant_id)";
         Map<String, Long> param = Map.of("restaurant_id", restaurantId);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));

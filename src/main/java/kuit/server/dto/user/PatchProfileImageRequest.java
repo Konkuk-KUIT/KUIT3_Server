@@ -10,5 +10,4 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PatchProfileImageRequest {
     private String profile_image;
-
 }
