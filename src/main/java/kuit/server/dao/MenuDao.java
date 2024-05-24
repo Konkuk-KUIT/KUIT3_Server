@@ -42,6 +42,7 @@ public class MenuDao {
         return price < 0;
     }
 
+
     public int modifyPrice(long menuId, int price) {
         String sql = "update menu set price=:price where menuId=:menuId";
         Map<String, Object> param = Map.of(
@@ -81,5 +82,11 @@ public class MenuDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
+
+    public boolean isAlreadyDeletedMenu(Long menuId) {
+        String sql = "select exists(select menuId from menu where menuId=:menuId and status = 'deleted')";
+        Map<String, Object> param = Map.of("menuId", menuId);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+    }
 
 }

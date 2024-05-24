@@ -52,7 +52,9 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
      */
     INVALID_MENU_VALUE(6000, HttpStatus.BAD_REQUEST.value(), "메뉴 요청에서 잘못된 값이 존재합니다."),
     INVALID_MENU_PRICE(6001, HttpStatus.BAD_REQUEST.value(), "메뉴 값은 양수이어야 합니다"),
-    DUPLICATE_MENU(6002,HttpStatus.BAD_REQUEST.value(),"이미 등록된 메뉴입니다.");
+    DUPLICATE_MENU(6002,HttpStatus.BAD_REQUEST.value(),"이미 등록된 메뉴입니다."),
+    ALREADY_DELETED_MENU(6003, HttpStatus.BAD_REQUEST.value(), "해당 메뉴는 이미 삭제되었습니다.");
+
 
 
     private final int code;

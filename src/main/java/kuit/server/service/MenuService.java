@@ -46,6 +46,7 @@ public class MenuService {
     }
     public void modifyPrice(long menuId, int price) {
         log.info("[MenuService.modifyPrice]");
+        validatePrice(price);
 
         int affectedRows = menuDao.modifyPrice(menuId, price); //수정된 행의 개수
         if (affectedRows != 1) {    //수정된 행의 개수가 1이 아닌 경우
@@ -59,10 +60,18 @@ public class MenuService {
 
     public void modifyMenuStatus_deleted(long menuId) {
         log.info("[MenuService.modifyMenuStatus_deleted]");
+        isAlreadyDeletedMenu(menuId);
 
         int affectedRows = menuDao.modifyMenuStatus_deleted(menuId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
+        }
+
+    }
+
+    public void isAlreadyDeletedMenu(Long menuId){
+        if(menuDao.isAlreadyDeletedMenu(menuId)){
+            throw new MenuException(ALREADY_DELETED_MENU);
         }
     }
 
