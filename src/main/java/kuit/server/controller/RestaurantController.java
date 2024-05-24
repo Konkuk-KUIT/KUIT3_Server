@@ -2,14 +2,17 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dao.MenuDao;
 import kuit.server.dto.menu.GetMenuResponse;
 import kuit.server.dto.menu.PostMenuRequest;
+import kuit.server.dto.menu.PostMenuResponse;
 import kuit.server.dto.restaurant.GetCategoryResponse;
 import kuit.server.dto.restaurant.GetStoreResponse;
 import kuit.server.service.MenuService;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +28,7 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
     private final MenuService menuService;
+    private final MenuDao menuDao;
 
     @RequestMapping("")
     public BaseResponse<List<GetStoreResponse>> getStores() {
@@ -48,6 +52,7 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getSpecificCategories(categoryId));
     }
 
+    // Menu api
     @GetMapping("/{restaurantId}/menus")
     public BaseResponse<List<GetMenuResponse>> getMenus(
             @PathVariable("restaurantId") long restaurantId) {
@@ -57,5 +62,13 @@ public class RestaurantController {
         }
         return new BaseResponse<>(menuService.getMenus(restaurantId));
     }
-
+    @PostMapping("/{restaurantId}/menus")
+    public BaseResponse<PostMenuResponse> addMenu(
+            @PathVariable("restaurantId") long restaurantId, @Validated @RequestBody PostMenuRequest postMenuRequest, BindingResult bindingResult) {
+        log.info("[RestaurantsMenuController.addMenu]");
+        if (restaurantId <= 0) {
+            throw new UserException(INVALID_USER_STATUS);
+        }
+        return new BaseResponse<>(menuService.addMenu(postMenuRequest, restaurantId));
+    }
 }
