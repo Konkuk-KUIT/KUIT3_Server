@@ -25,13 +25,7 @@ public class RestaurantDao {
     public RestaurantDao(DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
-
-    public boolean hasDuplicateName(String name) {
-        String sql = "select exists(select name from Restaurant where name=:name)";
-        Map<String, Object> param = Map.of("name", name);
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
-    }
-
+    // 레스토랑 생성
     public long createRestaurant(PostRestaurantRequest postRestaurantRequest) {
         String sql = "insert into Restaurant(name, location, phone, category, min_order_amount, status) " +
                 "values(:name, :location, :phone, :category, :minOrderAmount, :status)";
@@ -43,6 +37,7 @@ public class RestaurantDao {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    // 레스토랑 상태 변경
     public int modifyRestaurantStatus(long restaurantid, String status) {
         String sql = "update Restaurant set status=:status where restaurantid=:restaurantid";
         Map<String, Object> param = Map.of(
@@ -50,7 +45,7 @@ public class RestaurantDao {
                 "restaurantid", restaurantid);
         return jdbcTemplate.update(sql, param);
     }
-
+    // 디테일 스정
     public int modifyRestaurantDetails(long restaurantid, String name, String location, String phone, String category, int minOrderAmount) {
         String sql = "update Restaurant set name=:name, location=:location, phone=:phone, category=:category, min_order_amount=:minOrderAmount where restaurantid=:restaurantid";
         Map<String, Object> param = Map.of(
@@ -71,7 +66,6 @@ public class RestaurantDao {
                 "location", "%" + location + "%"
         );
 
-        // 상태 필터링이 필요할 경우 추가
         if (status != null && !status.isEmpty()) {
             sql += " and status = :status";
             param = new HashMap<>(param);
@@ -107,8 +101,16 @@ public class RestaurantDao {
     }
 
     public long getRestaurantIdByName(String name) {
-        String sql = "select restaurantid from Restaurant where name=:name and status='Open'";
+        String sql = "select restaurantid from Restaurant where name=:name";
         Map<String, Object> param = Map.of("name", name);
         return jdbcTemplate.queryForObject(sql, param, Long.class);
     }
+
+
+    public boolean hasDuplicatePhone(String phone) {
+        String sql = "select exists(select phone from restaurant where phone=:phone)";
+        Map<String, Object> param = Map.of("phone", phone);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, Boolean.class));
+    }
+
 }

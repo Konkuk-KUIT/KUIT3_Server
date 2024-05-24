@@ -44,6 +44,7 @@ public class UserController {
         log.info("[UserController.modifyUserStatus_Inactive]");
         userService.modifyUserStatus_Inactive(userid);
         return new BaseResponse<>(null);
+//        USER_NOT_FOUND
     }
 
     /**

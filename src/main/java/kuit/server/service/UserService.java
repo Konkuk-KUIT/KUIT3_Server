@@ -59,7 +59,7 @@ public class UserService {
 
         int affectedRows = userDao.modifyUserStatus_Inactive(userid);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 
@@ -68,7 +68,7 @@ public class UserService {
 
         int affectedRows = userDao.modifyUserStatus_deleted(userid);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 
@@ -78,7 +78,7 @@ public class UserService {
         validateNickname(name);
         int affectedRows = userDao.modifyNickname(userid, name);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 

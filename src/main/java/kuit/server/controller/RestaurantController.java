@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_RESTAURANT_STATUS;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_RESTAURANT_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_PHONE;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -32,7 +33,7 @@ public class RestaurantController {
     public BaseResponse<Long> registerRestaurant(@Validated @RequestBody PostRestaurantRequest postRestaurantRequest, BindingResult bindingResult) {
         log.info("[RestaurantController.registerRestaurant]");
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new UserException(INVALID_RESTAURANT_VALUE, getErrorMessages(bindingResult));
         }
         long restaurantId = restaurantService.registerRestaurant(postRestaurantRequest);
         return new BaseResponse<>(restaurantId);
@@ -57,7 +58,7 @@ public class RestaurantController {
                                                         BindingResult bindingResult) {
         log.info("[RestaurantController.modifyRestaurantDetails]");
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new UserException(INVALID_RESTAURANT_VALUE, getErrorMessages(bindingResult));
         }
         restaurantService.updateRestaurantDetails(restaurantid, postRestaurantRequest);
         return new BaseResponse<>(null);
@@ -73,7 +74,7 @@ public class RestaurantController {
             @RequestParam(required = false, defaultValue = "Open") String status) {
         log.info("[RestaurantController.getRestaurants]");
         if (!status.equals("Close") && !status.equals("Open")) {
-            throw new UserException(INVALID_USER_STATUS);
+            throw new UserException(INVALID_RESTAURANT_STATUS);
         }
         return new BaseResponse<>(restaurantService.getRestaurants(name, location, status));
     }
