@@ -26,13 +26,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 public class UserController {
 
     private final UserService userService;
-    private final PostUserRequestValidator postUserRequestValidator;
+    //private final PostUserRequestValidator postUserRequestValidator;
 
-    @InitBinder
-    public void init(WebDataBinder dataBinder){
-        log.info("init binder {}",dataBinder);
-        dataBinder.addValidators(postUserRequestValidator);
-    }
+//    @InitBinder
+//    public void init(WebDataBinder dataBinder){
+//        log.info("init binder {}",dataBinder);
+//        dataBinder.addValidators(postUserRequestValidator);
+//    }
 
     /**
      * 회원 가입
@@ -44,7 +44,7 @@ public class UserController {
         //postUserRequestValidator.validate(postUserRequest, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            throw new RuntimeException();
+            throw new RuntimeException(bindingResult.getAllErrors().toString());
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
