@@ -1,18 +1,27 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.ShopException;
+import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.shop.FoodCategory;
+import kuit.server.dto.shop.PostShopRequest;
+import kuit.server.dto.shop.PostShopResponse;
 import kuit.server.dto.shop.Shop;
+import kuit.server.dto.user.PostUserRequest;
 import kuit.server.dto.user.PostUserResponse;
 import kuit.server.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.hibernate.validator.constraints.Range;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_SHOP_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
 @RestController
@@ -21,7 +30,17 @@ import java.util.List;
 public class ShopController {
     private final ShopService shopService;
 
-
+    /**
+    * shop 추가
+     * */
+    @PostMapping("")
+    public BaseResponse<PostShopResponse> signUp(@Validated @RequestBody PostShopRequest postShopRequest, BindingResult bindingResult) {
+        log.info("[ShopController.addShop]");
+        if (bindingResult.hasErrors()) {
+            throw new ShopException(INVALID_SHOP_VALUE, getErrorMessages(bindingResult));
+        }
+        return new BaseResponse<>(shopService.addShop(postShopRequest));
+    }
     @GetMapping("/list")
     public BaseResponse<List<Shop>> getShops(@RequestParam(required = false) String category, @RequestParam(required = false) String address) {
         if (category != null && address != null) {
@@ -40,12 +59,20 @@ public class ShopController {
         }
     }
     @GetMapping("/detail")
-    public BaseResponse<List<Shop>> getShopDetail(@RequestParam long shopId) {
+    public BaseResponse<List<Shop>> getShopDetail(@Validated @RequestParam long shopId, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ShopException(INVALID_SHOP_VALUE, getErrorMessages(bindingResult));
+        }
         return new BaseResponse<>(shopService.getShopById(shopId));
     }
 
     @GetMapping("/food-categories")
     public List<FoodCategory> getAllFoodCategories() {
         return shopService.getAllFoodCategories();
+    }
+
+    @PostMapping("/food-categories/{foodCategory}")
+    public BaseResponse<String> postAllFoodCategories(@Range(min=1,max=10) @PathVariable String foodCategory) {
+        return new BaseResponse<>(shopService.addFoodCategory(foodCategory));
     }
 }
