@@ -11,22 +11,22 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @NoArgsConstructor
 public class PostStoreRequest {
-    @NotBlank(message = "Name is required")
-    @Length(max = 255, message = "Name: 최대 {max}자리까지 가능합니다")
+    @NotBlank(message = "가게이름은 필수 입력사항입니다.")
+    @Length(max = 255, message = "가게이름 : 최대 {max}자리까지 가능합니다")
     private String name;
 
-    @NotBlank(message = "Address is required")
-    @Length(max = 50, message = "Address: 최대 {max}자리까지 가능합니다")
+    @NotBlank(message = "가게주소는 필수 입력사항입니다.")
+    @Length(max = 50, message = "가게주소 : 최대 {max}자리까지 가능합니다")
     private String address;
 
-    @NotBlank(message = "Food category is required")
-    @Length(max = 50, message = "Food Category: 최대 {max}자리까지 가능합니다")
+    @NotBlank(message = "음식카테고리는 필수 입력사항입니다.")
+    @Length(max = 50, message = "음식 카테고리 : 최대 {max}자리까지 가능합니다")
     private String foodCategory;
 
-    @NotNull(message = "Store type is required")
+    @NotNull(message = "가게타입은 필수 입력사항입니다.")
     private Integer type;
 
-    @NotBlank(message = "Phone number is required")
-    @Length(min = 10, max = 11, message = "Phone Number: 최소 {min}자리 ~ 최대 {max}자리까지 가능합니다")
+    @NotBlank(message = "가게번호는 필수 입력사항입니다.")
+    @Length(min = 10, max = 11, message = "전화번호 : 최소 {min}자리 ~ 최대 {max}자리까지 입력가능합니다")
     private String phoneNumber;
 }
