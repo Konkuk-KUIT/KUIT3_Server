@@ -5,7 +5,9 @@ import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.restaurant.GetRestaurant;
 import kuit.server.dto.restaurant.GetcategoryResponse;
+import kuit.server.dto.restaurant.PatchRestaurantNameRequest;
 import kuit.server.dto.restaurant.PostRestaurantRequest;
+import kuit.server.dto.user.PatchNicknameRequest;
 import kuit.server.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,5 +43,14 @@ public class RestaurantController {
         }
         long restaurantId = restaurantService.createRestaurant(postRestaurantRequest);
         return new BaseResponse<>(restaurantId);
+    }
+    @PatchMapping("/{restaurantId}/restaurantName")
+    public BaseResponse<String> modifyNickname(@PathVariable long restaurantId,
+                                               @Validated @RequestBody PatchRestaurantNameRequest patchRestaurantNameRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new RestaurantException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        restaurantService.modifyRestaurantName(restaurantId, patchRestaurantNameRequest.getRestaurantname());
+        return new BaseResponse<>(null);
     }
 }

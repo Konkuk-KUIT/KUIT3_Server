@@ -63,4 +63,12 @@ public class RestaurantDao {
         Map<String, Object> param = Map.of("restaurantname", restaurantname);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
+
+    public int modifyRestaurantName(long restaurantId, String restaurantname) {
+        String sql = "update restaurants set restaurantname=:restaurantname where restaurantId=:restaurantId";
+        Map<String, Object> param = Map.of(
+                "restaurantname", restaurantname,
+                "restaurantId", restaurantId);
+        return jdbcTemplate.update(sql, param);
+    }
 }

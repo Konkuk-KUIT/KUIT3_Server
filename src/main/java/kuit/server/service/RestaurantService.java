@@ -1,5 +1,6 @@
 package kuit.server.service;
 
+import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.RestaurantException;
 import kuit.server.dao.RestaurantDao;
 import kuit.server.dto.restaurant.GetRestaurant;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.DATABASE_ERROR;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.DUPLICATE_RESTAURANT_NAME;
 
 @Slf4j
@@ -31,6 +33,14 @@ public class RestaurantService {
     private void validateRestaurantName(String restaurantname) {
         if (restaurantDao.hasDuplicateRestaurantName(restaurantname)) {
             throw new RestaurantException(DUPLICATE_RESTAURANT_NAME);
+        }
+    }
+
+    public void modifyRestaurantName(long restaurantId, String restaurantname) {
+        validateRestaurantName(restaurantname);
+        int affectedRows = restaurantDao.modifyRestaurantName(restaurantId, restaurantname);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
         }
     }
 }
