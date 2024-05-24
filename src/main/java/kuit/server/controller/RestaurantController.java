@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.RestaurantException;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dao.MenuDao;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_RESTAURANT_VALUE;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
 
 @Slf4j
@@ -58,7 +60,7 @@ public class RestaurantController {
             @PathVariable("restaurantId") long restaurantId) {
         log.info("[RestaurantsMenuController.getMenus]");
         if (restaurantId <= 0) {
-            throw new UserException(INVALID_USER_STATUS);
+            throw new RestaurantException(INVALID_RESTAURANT_VALUE);
         }
         return new BaseResponse<>(menuService.getMenus(restaurantId));
     }
@@ -67,7 +69,7 @@ public class RestaurantController {
             @PathVariable("restaurantId") long restaurantId, @Validated @RequestBody PostMenuRequest postMenuRequest, BindingResult bindingResult) {
         log.info("[RestaurantsMenuController.addMenu]");
         if (restaurantId <= 0) {
-            throw new UserException(INVALID_USER_STATUS);
+            throw new RestaurantException(INVALID_RESTAURANT_VALUE);
         }
         return new BaseResponse<>(menuService.addMenu(postMenuRequest, restaurantId));
     }
