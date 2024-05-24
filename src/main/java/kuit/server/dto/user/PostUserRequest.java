@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
+import org.springframework.validation.annotation.Validated;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Validated
 public class PostUserRequest {
 
     @Email(message = "email: 이메일 형식이어야 합니다")

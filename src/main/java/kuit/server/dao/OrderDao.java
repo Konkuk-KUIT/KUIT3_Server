@@ -1,6 +1,7 @@
 package kuit.server.dao;
 
 import java.util.Map;
+import kuit.server.dto.order.PostOrderRequest;
 import kuit.server.dto.user.GetUserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,5 +22,9 @@ public class OrderDao {
 
         return jdbcTemplate.queryForObject(sql, param, new BeanPropertyRowMapper<>(GetUserResponse.class));
 
+    }
+
+    public void registerOrder(PostOrderRequest postOrderRequest) {  // TODO: 하하하
+        String sql = "insert all";
     }
 }

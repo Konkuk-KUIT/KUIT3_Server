@@ -47,6 +47,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
     EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
 
+    /**
+     * 6000: Store 오류
+     */
+//    EMPTY_MENU()
+
     private final int code;
     private final int status;
     private final String message;
