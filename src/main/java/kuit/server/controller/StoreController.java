@@ -25,21 +25,9 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping("")
-    public BaseResponse<Long> registerStore(@Validated @RequestBody PostStoreRequest storeRequest){
+    public BaseResponse<Long> registerStore(@Validated @RequestBody PostStoreRequest storeRequest) {
         long storeId = storeService.resgisterStore(storeRequest);
         return new BaseResponse<>(storeId);
-    }
-
-    //유효성 검사 예외 처리 핸들러
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex){
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("")
