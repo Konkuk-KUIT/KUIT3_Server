@@ -69,6 +69,16 @@ public class UserController {
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+    @PutMapping("/{userId}/UserInfo")
+    public BaseResponse<String> modifyUserInfo(@PathVariable long userId,
+                                               @Validated @RequestBody PutUserInfoRequest putUserInfoRequest, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyUserInfo(userId, putUserInfoRequest);
+        return new BaseResponse<>(null);
+    }
 
     /**
      * 회원 목록 조회

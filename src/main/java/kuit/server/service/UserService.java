@@ -76,7 +76,19 @@ public class UserService {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
-
+    public void modifyUserInfo(long userId, PutUserInfoRequest putUserInfoRequest) {
+        validateEmail(putUserInfoRequest.getEmail());
+        String nickname = putUserInfoRequest.getNickname();
+        if (nickname != null) {
+            validateNickname(putUserInfoRequest.getNickname());
+        }
+        String encodedPassword = passwordEncoder.encode(putUserInfoRequest.getPassword());
+        putUserInfoRequest.resetPassword(encodedPassword);
+        int affectedRows = userDao.modifyUserInfo(userId, putUserInfoRequest);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
@@ -98,5 +110,6 @@ public class UserService {
             throw new UserException(ALREADY_DORMANT);
         }
     }
+
 
 }

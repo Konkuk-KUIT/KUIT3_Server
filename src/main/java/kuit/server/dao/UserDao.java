@@ -2,6 +2,7 @@ package kuit.server.dao;
 
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
+import kuit.server.dto.user.PutUserInfoRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -75,6 +76,20 @@ public class UserDao {
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }
+    public int modifyUserInfo(long userId, PutUserInfoRequest putUserInfoRequest) {
+        String nickname = putUserInfoRequest.getNickname();
+        String password = putUserInfoRequest.getPassword();
+        String email = putUserInfoRequest.getEmail();
+        String phone = putUserInfoRequest.getPhoneNumber();
+        String sql = "update user set username=:nickname,password=:password,email=:email,phone=:phonewhere userid=:user_id";
+        Map<String, Object> param = Map.of(
+                "nickname", nickname,
+                "password",password,
+                "email",email,
+                "phone",phone,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         String sql = "select email, phone, username, status from user " +
@@ -105,6 +120,7 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
 
 
 }
