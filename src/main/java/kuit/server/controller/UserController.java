@@ -49,32 +49,12 @@ public class UserController {
   }
 
   /**
-   * 회원 활성
+   * 회원 상태 변경
    */
-  @PatchMapping("/{userId}/active")
-  public BaseResponse<Object> modifyUserStatus_active(@PathVariable long userId) {
-    log.info("[UserController.modifyUserStatus_active]");
-    userService.modifyUserStatus_active(userId);
-    return new BaseResponse<>(null);
-  }
-
-  /**
-   * 회원 휴면
-   */
-  @PatchMapping("/{userId}/dormant")
-  public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-    log.info("[UserController.modifyUserStatus_dormant]");
-    userService.modifyUserStatus_dormant(userId);
-    return new BaseResponse<>(null);
-  }
-
-  /**
-   * 회원 탈퇴
-   */
-  @PatchMapping("/{userId}/deleted")
-  public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
-    log.info("[UserController.modifyUserStatus_delete]");
-    userService.modifyUserStatus_deleted(userId);
+  @PatchMapping("/{userId}/{status}")
+  public BaseResponse<Object> modifyUserStatus_active(@PathVariable long userId, @PathVariable String status) {
+    log.info("[UserController.modifyUserStatus]");
+    userService.modifyUserStatus(userId, status);
     return new BaseResponse<>(null);
   }
 
@@ -106,5 +86,4 @@ public class UserController {
     }
     return new BaseResponse<>(userService.getUsers(nickname, email, status));
   }
-
 }

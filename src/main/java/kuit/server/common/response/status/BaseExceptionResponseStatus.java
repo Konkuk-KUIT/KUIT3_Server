@@ -43,23 +43,26 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     DUPLICATE_EMAIL(5001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 이메일입니다."),
     DUPLICATE_NICKNAME(5002, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 닉네임입니다."),
     USER_NOT_FOUND(5003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
+
     PASSWORD_NO_MATCH(5004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(5005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
     EMAIL_NOT_FOUND(5006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+    ALREADY_ACTIVE_USER(5007, HttpStatus.BAD_REQUEST.value(), "이미 활성상태의 회원입니다."),
+    ALREADY_DORMANT_USER(5007, HttpStatus.BAD_REQUEST.value(), "이미 비활성상태의 회원입니다."),
 
     /**
      * 5500: Store 오류
      */
-    INVALID_STORE_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "가게등록 요청에서 잘못된 값이 존재합니다."),
-    DUPLICATE_BUSINESS_NUMBER(5500, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 사업자번호입니다."),
-    STORE_NOT_FOUND(5003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 가게입니다."),
+    INVALID_STORE_VALUE(5500, HttpStatus.BAD_REQUEST.value(), "가게등록 요청에서 잘못된 값이 존재합니다."),
+    DUPLICATE_BUSINESS_NUMBER(5501, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 사업자번호입니다."),
+    STORE_NOT_FOUND(5502, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 가게입니다."),
 
     /**
      * 6000: Menu 오류
      */
-    INVALID_MENU_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "메뉴등록 요청에서 잘못된 값이 존재합니다."),
-    DUPLICATE_MENU_NAME(5500, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 메뉴입니다."),
-    MENU_NOT_FOUND(5003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 메뉴입니다.");
+    INVALID_MENU_VALUE(6000, HttpStatus.BAD_REQUEST.value(), "메뉴등록 요청에서 잘못된 값이 존재합니다."),
+    DUPLICATE_MENU_NAME(6001, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 메뉴입니다."),
+    MENU_NOT_FOUND(6002, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 메뉴입니다.");
 
     private final int code;
     private final int status;
