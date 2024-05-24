@@ -2,8 +2,6 @@ package kuit.server.dao;
 
 import kuit.server.dto.menu.GetMenuResponse;
 import kuit.server.dto.menu.PostMenuRequest;
-import kuit.server.dto.user.PostUserRequest;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -62,5 +60,13 @@ public class MenuDao {
         jdbcTemplate.update(sql, param, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+    public boolean isValidRestaurantId(long restaurantId) {
+        String sql = "SELECT COUNT(*) FROM store WHERE store_id = :restaurantId";
+
+        SqlParameterSource param = new MapSqlParameterSource("restaurantId", restaurantId);
+        Integer count = jdbcTemplate.queryForObject(sql, param, Integer.class);
+
+        return count != null && count > 0;
     }
 }
