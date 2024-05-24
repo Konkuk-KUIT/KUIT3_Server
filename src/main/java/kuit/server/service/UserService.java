@@ -7,6 +7,7 @@ import kuit.server.dto.user.*;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +30,9 @@ public class UserService {
 
         // TODO: 1. validation (중복 검사)
         validateEmail(postUserRequest.getEmail());
-        String nickname = postUserRequest.getNickname();
-        if (nickname != null) {
-            validateNickname(postUserRequest.getNickname());
+        String name = postUserRequest.getName();
+        if (name != null) {
+            validateName(postUserRequest.getName());
         }
 
         // TODO: 2. password 암호화
@@ -42,9 +43,33 @@ public class UserService {
         long userId = userDao.createUser(postUserRequest);
 
         // TODO: 4. JWT 토큰 생성
-        String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
+//        String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
+        String jwt = "1212";
 
         return new PostUserResponse(userId, jwt);
+    }
+
+    public PostLoginResponse logIn(PostLoginRequest postLoginRequest) {
+        log.info("[UserService.logIn]");
+        String email = postLoginRequest.getEmail();
+        String password = postLoginRequest.getPassword();
+        long userId;
+        try {
+            userId = userDao.getUserIdByEmail(email);
+        } catch (IncorrectResultSizeDataAccessException e) {
+            throw new UserException(EMAIL_NOT_FOUND);
+        }
+        validateEmail(email);
+        validatePassword(password, userId);
+        String jwt = "1";
+        return new PostLoginResponse(userId, jwt);
+    }
+
+    private void validatePassword(String password, long userId) {
+        String DBpassword = userDao.getPasswordByUserId(userId);
+        if(!passwordEncoder.matches(DBpassword, password)) {
+            throw new UserException(PASSWORD_NO_MATCH);
+        }
     }
 
     public void modifyUserStatus_dormant(long userId) {
@@ -52,7 +77,7 @@ public class UserService {
 
         int affectedRows = userDao.modifyUserStatus_dormant(userId);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 
@@ -61,23 +86,23 @@ public class UserService {
 
         int affectedRows = userDao.modifyUserStatus_deleted(userId);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 
-    public void modifyNickname(long userId, String nickname) {
-        log.info("[UserService.modifyNickname]");
+    public void modifyName(long userId, String name) {
+        log.info("[UserService.modifyName]");
 
-        validateNickname(nickname);
-        int affectedRows = userDao.modifyNickname(userId, nickname);
+        validateName(name);
+        int affectedRows = userDao.modifyName(userId, name);
         if (affectedRows != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(USER_NOT_FOUND);
         }
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+    public List<GetUserResponse> getUsers(String name, String email, String status) {
         log.info("[UserService.getUsers]");
-        return userDao.getUsers(nickname, email, status);
+        return userDao.getUsers(name, email, status);
     }
 
     private void validateEmail(String email) {
@@ -86,9 +111,9 @@ public class UserService {
         }
     }
 
-    private void validateNickname(String nickname) {
-        if (userDao.hasDuplicateNickName(nickname)) {
-            throw new UserException(DUPLICATE_NICKNAME);
+    private void validateName(String name) {
+        if (userDao.hasDuplicateName(name)) {
+            throw new UserException(DUPLICATE_NAME);
         }
     }
 

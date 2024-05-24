@@ -36,6 +36,12 @@ public class UserController {
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
 
+    @PostMapping("/login")
+    public BaseResponse<PostLoginResponse> logIn(@RequestBody PostLoginRequest postLoginReq) {
+        log.info("MemberController.login");
+        return new BaseResponse<>(userService.logIn(postLoginReq));
+    }
+
     /**
      * 회원 휴면
      */
@@ -59,14 +65,14 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
-                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
-        log.info("[UserController.modifyNickname]");
+    @PatchMapping("/{userId}/name")
+    public BaseResponse<String> modifyName(@PathVariable long userId,
+                                               @Validated @RequestBody PatchNameRequest patchNameRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyName]");
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
-        userService.modifyNickname(userId, patchNicknameRequest.getNickname());
+        userService.modifyName(userId, patchNameRequest.getName());
         return new BaseResponse<>(null);
     }
 
