@@ -36,7 +36,7 @@ public class UserDao {
     }
 
     public boolean hasDuplicateNickName(String nickname) {
-        String sql = "select exists(select email from user where nickname=:nickname and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where nickname=:nickname and status in ('일반', 'deleted'))";
         Map<String, Object> param = Map.of("nickname", nickname);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
