@@ -60,7 +60,7 @@ public class RestaurantDao {
     }
 
     public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price) {
-        String sql = "select * from restaurants where category = :category and min_price >= :min_price";
+        String sql = "select * from restaurant where category = :category and min_price >= :min_price";
 
         Map<String, Object> param = new HashMap<>();
         param.put("category", category);
