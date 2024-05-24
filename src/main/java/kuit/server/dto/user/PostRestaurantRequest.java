@@ -1,5 +1,6 @@
 package kuit.server.dto.user;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +38,7 @@ public class PostRestaurantRequest {
     @Max(value = 5, message = "star: 별점은 0~5의 값입니다.")
     private double star;
 
+    @Nullable
     private String picture_url;
 
 }
