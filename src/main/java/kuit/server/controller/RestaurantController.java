@@ -82,7 +82,6 @@ public class RestaurantController {
             @RequestParam(value = "max_delivery_fee", required = false) String max_delivery_fee
     ){
         return new BaseResponse<>(restaurantService.search(keyword, min_star, max_delivery_fee));
-
     }
 
 }

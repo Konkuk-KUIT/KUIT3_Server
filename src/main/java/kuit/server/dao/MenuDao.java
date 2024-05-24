@@ -66,4 +66,15 @@ public class MenuDao {
                 )
         );
     }
+
+    public int modifyPrice(Long menuId, Integer price) {
+        String sql = "UPDATE menu SET price = :price WHERE menu_id = :menu_id";
+
+        Map<String, Object> param = Map.of(
+            "menu_id", menuId,
+            "price", price
+        );
+
+        return jdbcTemplate.update(sql, param);
+    }
 }
