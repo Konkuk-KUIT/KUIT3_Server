@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,21 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
-
+    // DB 접근 전에 서버 딴에서 데이터 유효성 검증 하는 단계
     private final UserService userService;
+    private final postUserRequestValidator postUserRequestValidator;
 
+    @InitBinder
+    public void init(WebDataBinder dataBinder){
+        dataBinder.addValidators(postUserRequestValidator);
+    }
+
+    private ObjectMapper objectMapper = new ObjectMapper();
     /**
      * 회원 가입
      */
     @PostMapping("")
+
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
         if (bindingResult.hasErrors()) {
@@ -35,6 +45,8 @@ public class UserController {
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
+
+
 
     /**
      * 회원 휴면
@@ -84,5 +96,4 @@ public class UserController {
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
-
 }
