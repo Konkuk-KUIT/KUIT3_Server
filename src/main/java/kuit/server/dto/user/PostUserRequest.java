@@ -13,9 +13,11 @@ import org.springframework.lang.Nullable;
 @Setter
 @NoArgsConstructor
 public class PostUserRequest {
-
+    // 예외 처리 메세지
     @Email(message = "email: 이메일 형식이어야 합니다")
+    // null, 빈 문자열, 공백 제외
     @NotBlank(message = "email: {NotBlank}")
+    // 길이
     @Length(max = 50, message = "email: 최대 {max}자리까지 가능합니다")
     private String email;
 
