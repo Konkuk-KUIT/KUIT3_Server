@@ -1,11 +1,13 @@
 package kuit.server.controller;
 
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.order.GetOrderResponse;
 import kuit.server.dto.order.PostOrderRequest;
 import kuit.server.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,5 +38,10 @@ public class OrderController {
         orderService.cancelOrder(orderId);
 
         return new BaseResponse<>("orderId=" + orderId + " 삭제처리 되었습니다.");
+    }
+
+    @GetMapping("/{orderId}")
+    public GetOrderResponse getOrder(@PathVariable long orderId) {
+        return orderService.getOrder(orderId);
     }
 }

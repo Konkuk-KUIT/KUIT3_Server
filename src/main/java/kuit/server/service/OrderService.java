@@ -6,6 +6,7 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.WRO
 import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.OrderException;
 import kuit.server.dao.OrderDao;
+import kuit.server.dto.order.GetOrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,5 +25,11 @@ public class OrderService {
         if(effectedRow == 0) {
             throw new OrderException(WRONG_ORDER_ID);
         }
+    }
+
+    public GetOrderResponse getOrder(long orderId) {
+        GetOrderResponse order = orderDao.getOrder(orderId);
+
+        return order;
     }
 }

@@ -1,9 +1,11 @@
 package kuit.server.dao;
 
 import java.util.Map;
+import kuit.server.dto.order.GetOrderResponse;
 import kuit.server.dto.order.PostOrderRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -25,7 +27,12 @@ public class OrderDao {
         return jdbcTemplate.update(sql, param); // returns affected row
     }
 
-//    public int getOrder(long orderId) {
-//
-//    }
+    public GetOrderResponse getOrder(long orderId) {
+        String sql = "select order_id, status, total from `order` "
+                + "where order_id=:order_id";
+
+        Map<String, Object> param = Map.of("order_id", orderId);
+
+        return jdbcTemplate.queryForObject(sql, param, new BeanPropertyRowMapper<>(GetOrderResponse.class));
+    }
 }
