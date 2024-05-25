@@ -1,6 +1,6 @@
 package kuit.server.dao;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import kuit.server.dto.user.GetUserOrderHistoryResponse;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -111,5 +111,15 @@ public class UserDao {
 
         return jdbcTemplate.queryForObject(sql, param, new BeanPropertyRowMapper<>(GetUserResponse.class));
 
+    }
+
+    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId) {
+        String sql = "select user.user_id, `order`.order_id, `order`.status, `order`.total from user "
+                + "join `order` on user.user_id = `order`.user_id "
+                + "where user.user_id=:user_id";
+
+        Map<String, Object> param = Map.of("user_id", userId);
+
+        return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<>(GetUserOrderHistoryResponse.class));
     }
 }

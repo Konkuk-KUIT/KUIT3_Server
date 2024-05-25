@@ -89,4 +89,9 @@ public class UserController {
     public GetUserResponse getUserInfo(@PathVariable long userId) {
         return userService.getUserInfoByUserId(userId);
     }
+
+    @GetMapping("/{userId}/order-history")
+    public List<GetUserOrderHistoryResponse> getUserOrderHistory (@PathVariable long userId) {
+        return userService.getOrderByUserId(userId);
+    }
 }
