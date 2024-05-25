@@ -131,4 +131,5 @@ public class UserDao {
         String sql = "SELECT phone_number FROM user WHERE user_id = :userId";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Map.of("userId", userId), String.class));
     }
+
 }

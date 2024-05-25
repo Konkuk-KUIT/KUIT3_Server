@@ -46,4 +46,9 @@ public class StoreService {
             throw new RuntimeException("store 업데이트 실패");
         }
     }
+
+    public String getStoreAddress(long storeId) {
+        return storeDao.findStoreAddressById(storeId)
+                .orElseThrow(() -> new RuntimeException("Store with ID " + storeId + " not found"));
+    }
 }

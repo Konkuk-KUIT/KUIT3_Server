@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -71,6 +72,13 @@ public class StoreDao {
 
                 );
         return jdbcTemplate.update(sql, params);
+    }
+
+    // 특정 스토어 주소 조회
+    public Optional<String> findStoreAddressById(long storeId) {
+        String sql = "SELECT address FROM store WHERE store_id = :storeId";
+        Map<String, Object> params = Map.of("storeId", storeId);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, params, String.class));
     }
 }
 

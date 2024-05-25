@@ -2,6 +2,7 @@ package kuit.server.controller;
 
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
+import kuit.server.dto.store.GetStoreAddressResponse;
 import kuit.server.dto.store.GetStoreResponse;
 import kuit.server.dto.store.PatchFoodCategoryRequest;
 import kuit.server.dto.store.PostStoreRequest;
@@ -53,6 +54,7 @@ public class StoreController {
         return new BaseResponse<>(storeResponse);
     }
 
+    // 푸드 카테고리 수정
     @PatchMapping("/{storeId}/food_category")
     public BaseResponse<Void> updateFoodCategory(@PathVariable long storeId,
                                                  @Validated @RequestBody PatchFoodCategoryRequest request,
@@ -62,5 +64,12 @@ public class StoreController {
         }
         storeService.modifyFoodCategory(storeId, request.getFoodCategory());
         return new BaseResponse<>(null);
+    }
+
+    // 특정 스토어 주소 가져오기
+    @GetMapping("/{storeId}/address")
+    public BaseResponse<GetStoreAddressResponse> getAddress(@PathVariable long storeId) {
+        String address = storeService.getStoreAddress(storeId);
+        return new BaseResponse<>(new GetStoreAddressResponse(storeId,address));
     }
 }
