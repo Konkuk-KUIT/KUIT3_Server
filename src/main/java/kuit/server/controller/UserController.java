@@ -4,6 +4,7 @@ import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
 import kuit.server.service.UserService;
+import kuit.server.util.BindingResultUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.naming.Binding;
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -44,7 +44,7 @@ public class UserController {
         //postUserRequestValidator.validate(postUserRequest, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            throw new RuntimeException(bindingResult.getAllErrors().toString());
+            throw new UserException(INVALID_USER_VALUE, BindingResultUtils.getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
@@ -91,9 +91,23 @@ public class UserController {
                                                @Validated @RequestBody PatchPasswordRequest patchPasswordRequest, BindingResult bindingResult){
         log.info("[UserController.modifyPassword");
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new UserException(INVALID_PASSWORD, getErrorMessages(bindingResult));
         }
         userService.modifyPassword(userId, patchPasswordRequest.getPassword());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 휴대폰 번호 변경
+     */
+    @PatchMapping("/{userId}/phone_number")
+    public BaseResponse<String> modifyPhoneNumber(@PathVariable long userId,
+                                                  @Validated @RequestBody PatchPhoneNumberRequest patchPhoneNumberRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyPhoneNumber");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_PHONE_NUMBER, getErrorMessages(bindingResult));
+        }
+        userService.modifyPhoneNumber(userId, patchPhoneNumberRequest.getPhoneNumber());
         return new BaseResponse<>(null);
     }
 

@@ -80,6 +80,14 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
+    public int modifyPhoneNumber(long userId, String phone_number) {
+        String sql = "update user set phone_number=:phone_number where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "phone_number", phone_number,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         String sql = "select email, phone_number, nickname, profile_image, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";

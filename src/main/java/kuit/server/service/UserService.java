@@ -84,6 +84,15 @@ public class UserService {
         }
     }
 
+    public void modifyPhoneNumber(long userId, String phoneNumber) {
+        log.info("[UserService.modifyPhoneNumber]");
+
+        int affectedRows = userDao.modifyPhoneNumber(userId,phoneNumber);
+        if(affectedRows != 1){
+            throw  new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
@@ -100,4 +109,5 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
+
 }
