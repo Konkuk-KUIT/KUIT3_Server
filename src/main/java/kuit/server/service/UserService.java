@@ -79,8 +79,13 @@ public class UserService {  //비즈니스 로직
     public void modifyPassword(long userId, String password) {
         log.info("[UserService.modifyPassword]");
 
-      //  validatePassword(password);
-        int affectedRows = userDao.modifyPassword(userId, password);
+        if(validatePassword(password)){
+            throw new UserException(INVALID_PASSWORD,"password가 유효하지 않습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(password);
+
+        int affectedRows = userDao.modifyPassword(userId, encodedPassword);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
@@ -112,5 +117,9 @@ public class UserService {  //비즈니스 로직
     public String getPhoneNumberById(long userId) {
         return userDao.getPhoneNumberById(userId)
                 .orElseThrow(() -> new UserException(BaseExceptionResponseStatus.USER_NOT_FOUND, "User with ID " + userId + " not found"));
+    }
+
+    private boolean validatePassword(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=\\S+$).{8,}$");
     }
 }
