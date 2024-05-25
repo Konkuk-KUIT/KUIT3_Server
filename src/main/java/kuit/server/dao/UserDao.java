@@ -1,7 +1,10 @@
 package kuit.server.dao;
 
+import kuit.server.dto.restaurant.RestaurantMenuResponse;
 import kuit.server.dto.user.GetUserResponse;
 import kuit.server.dto.user.PostUserRequest;
+import kuit.server.dto.user.UserAddressRequest;
+import kuit.server.dto.user.UserOrdersResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,6 +14,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -101,6 +106,49 @@ public class UserDao {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    public List<UserOrdersResponse> getOrders(Long userId) {
+        String sql = "select * from user u join orders o on u.user_id = o.user_id " +
+                "join order_menu om on o.order_id = om.order_id " +
+                "join store s on o.store_id = s.store_id " +
+                "join menu m on m.store_id = s.store_id " +
+                "where u.user_id=:user_id";
+
+        Map<String, Object> param = Map.of(
+                "user_id", userId);
+
+
+        return jdbcTemplate.query(sql, param,(rs, rowNum) -> {
+            UserOrdersResponse orders = new UserOrdersResponse();
+
+            orders.setStoreName(rs.getString("store_name"));
+            orders.setPrice(rs.getInt("price"));
+            orders.setQuantity(rs.getInt("quantity"));
+            orders.setMenuName(rs.getString("menu_name"));
+            orders.setUpdated_at(rs.getString("o.updated_at"));
+
+            return orders;
+        });
+    }
+
+    public void createAddress(String userId, UserAddressRequest userAddressRequest) {
+        String sql = "INSERT INTO address (user_id,address_name, request, area_password, instruction, latitude, longitude, status, created_at, updated_at)" +
+                "VALUES (:user_id, :address_name, :request, :area_password, :instruction, :latitude, :longitude, :status, :created_at, :updated_at) ";
+
+        Map<String, Object> param = Map.of(
+                "user_id",userId,
+                "address_name", userAddressRequest.getAddress_name(),
+                "request", userAddressRequest.getRequest(),
+                "area_password", userAddressRequest.getArea_password(),
+                "instruction", userAddressRequest.getInstruction(),
+                "latitude", userAddressRequest.getLatitude(),
+                "longitude", userAddressRequest.getLongitude(),
+                "status", "active",
+                "created_at", Timestamp.valueOf(LocalDateTime.now()),
+                "updated_at", Timestamp.valueOf(LocalDateTime.now())
+        );
+        jdbcTemplate.update(sql, param);
     }
 
 }
