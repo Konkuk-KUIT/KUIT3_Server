@@ -1,11 +1,13 @@
 package kuit.server.common.exception_handler;
 
+import jakarta.annotation.Priority;
 import kuit.server.common.exception.BadRequestException;
 import kuit.server.common.exception.InternalServerErrorException;
 import kuit.server.common.response.BaseErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +19,7 @@ import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
 @RestControllerAdvice
+//@Priority(0) #0이 제일 높다
 public class BaseExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
