@@ -8,9 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PatchNicknameRequest {
+public class PatchNameRequest {
 
-    @NotNull(message = "nickname: {NotNull}")
-    private String nickname;
+    @NotNull(message = "name: {NotNull}")
+    private String name;
 
 }

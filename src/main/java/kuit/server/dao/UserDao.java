@@ -26,20 +26,20 @@ public class UserDao {
     }
 
     public boolean hasDuplicateEmail(String email) {
-        String sql = "select exists(select email from user where email=:email and status in ('active', 'dormant'))";
+        String sql = "select exists(select email from user where email=:email)";
         Map<String, Object> param = Map.of("email", email);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
-    public boolean hasDuplicateNickName(String nickname) {
-        String sql = "select exists(select email from user where nickname=:nickname and status in ('active', 'dormant'))";
-        Map<String, Object> param = Map.of("nickname", nickname);
+    public boolean hasDuplicateName(String name) {
+        String sql = "select exists(select email from user where name=:name and status in ('active', 'dormant'))";
+        Map<String, Object> param = Map.of("name", name);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
     public long createUser(PostUserRequest postUserRequest) {
-        String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
-                "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
+        String sql = "insert into user(email, password, phone, name, profileImg_url) " +
+                "values(:email, :password, :phone, :name, :profileImg_url)";
 
         SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -64,29 +64,29 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
-    public int modifyNickname(long userId, String nickname) {
-        String sql = "update user set nickname=:nickname where user_id=:user_id";
+    public int modifyName(long userId, String name) {
+        String sql = "update user set ame=:name where user_id=:user_id";
         Map<String, Object> param = Map.of(
-                "nickname", nickname,
+                "name", name,
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+    public List<GetUserResponse> getUsers(String name, String email, String status) {
+        String sql = "select email, phone, name, profileImg_url, status from user " +
+                "where name like :name and email like :email and status=:status";
 
         Map<String, Object> param = Map.of(
-                "nickname", "%" + nickname + "%",
+                "name", "%" + name + "%",
                 "email", "%" + email + "%",
                 "status", status);
 
         return jdbcTemplate.query(sql, param,
                 (rs, rowNum) -> new GetUserResponse(
                         rs.getString("email"),
-                        rs.getString("phone_number"),
-                        rs.getString("nickname"),
-                        rs.getString("profile_image"),
+                        rs.getString("phone"),
+                        rs.getString("name"),
+                        rs.getString("profileImg_url"),
                         rs.getString("status"))
         );
     }
