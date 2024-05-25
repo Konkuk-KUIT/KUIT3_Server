@@ -45,15 +45,8 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
-    DUPLICATE_SHOP_NAME(4007,HttpStatus.BAD_REQUEST.value(),"이미 존재하는 가게 이름 입니다."),
-    FOODCATEGORY_NOT_MATCH(4008,HttpStatus.BAD_REQUEST.value(),"없는 카테고리 입니다."),
-    //WISH_LIST_INVALID(4009,HttpStatus.BAD_REQUEST.value(),"찜 목록 "),
-    INVALID_SHOP_VALUE(5000, HttpStatus.BAD_REQUEST.value(), "가게 등록 요청에서 잘못된 값이 존재합니다."),
-    INVALID_USER_ID(4009, HttpStatus.BAD_REQUEST.value(), "유효하지 않은 사용자 Id입니다"),
-    INVALID_SHOP_ID(4010, HttpStatus.BAD_REQUEST.value(), "유효하지 않는 가게 Id입니다."),
-    DUPLICATED_USER_ADDRESS(4011, HttpStatus.BAD_REQUEST.value(), "이미 존재하는 주소 입니다"),
-    INVALID_ADDRESS_INPUT(4010, HttpStatus.BAD_REQUEST.value(), "유효하지 않는 가게 Id입니다."),;
+    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+
     private final int code;
     private final int status;
     private final String message;

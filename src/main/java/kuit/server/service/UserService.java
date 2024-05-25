@@ -4,13 +4,9 @@ import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
 import kuit.server.dao.UserDao;
 import kuit.server.dto.user.*;
-import kuit.server.dto.user.address.GetUserAddressResponse;
-import kuit.server.dto.user.address.PostUserAddressRequest;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +23,6 @@ public class UserService {
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-
 
     public PostUserResponse signUp(PostUserRequest postUserRequest) {
         log.info("[UserService.createUser]");
@@ -48,7 +43,6 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
-//        =userDao.createUser(postUserRequest);
 
         return new PostUserResponse(userId, jwt);
     }
@@ -97,23 +91,5 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
-
-    public void addUserAddress(PostUserAddressRequest postUserAddressRequest){
-        if(!userDao.isExistId(postUserAddressRequest.getUserId())){
-            throw new UserException(INVALID_USER_ID);
-        }
-        if(userDao.hasDuplicateUserAddress(postUserAddressRequest)){
-            throw new UserException(DUPLICATED_USER_ADDRESS);
-        }
-        userDao.createUserAddress(postUserAddressRequest);
-    }
-    public List<GetUserAddressResponse> getUserAddress(long userId){
-        if(!userDao.isExistId(userId)){
-            throw new UserException(INVALID_USER_ID);
-        }
-        return userDao.getUserAddress(userId);
-    }
-
-
 
 }
