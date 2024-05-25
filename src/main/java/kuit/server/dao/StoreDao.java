@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Repository
@@ -55,5 +56,12 @@ public class StoreDao {
                 rs.getString("phone_number")
         ));
     }
+
+    public boolean hasDuplicateStoreName(String storename) {
+        String sql = "select exists(select name from store where name =:name)";
+        Map<String, Object> param = Map.of("name", storename);
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
+    }
+
 }
 

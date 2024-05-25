@@ -45,8 +45,11 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
 
+    // 6000: Store 오류
+    INVALID_STORE_VALUE(6000,HttpStatus.BAD_REQUEST.value(), "가게 등록 요청에서 잘못된 값이 존재합니다."),
+    DUPLICATE_STORENAME(6001,HttpStatus.BAD_REQUEST.value(),"중복된 가게 이름이 존재합니다.");
     private final int code;
     private final int status;
     private final String message;

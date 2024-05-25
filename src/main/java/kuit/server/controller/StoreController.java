@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.store.GetStoreResponse;
 import kuit.server.dto.store.PostStoreRequest;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.util.BindingResultUtils.getErrorMessages;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +30,14 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping("")
-    public BaseResponse<Long> registerStore(@Validated @RequestBody PostStoreRequest storeRequest) {
-        long storeId = storeService.resgisterStore(storeRequest);
+    public BaseResponse<Long> registerStore(@Validated @RequestBody PostStoreRequest storeRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        long storeId = storeService.registerStore(storeRequest);
         return new BaseResponse<>(storeId);
     }
+
 
     @GetMapping("")
     public BaseResponse<List<GetStoreResponse>> getAllStores() {
