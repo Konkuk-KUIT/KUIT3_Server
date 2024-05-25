@@ -50,8 +50,14 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     /**
      * 6000: Store 오류
      */
-    STORE_ERROR(5000, HttpStatus.BAD_REQUEST.value(), "가게 정보에 오류가 있습니다."),
-    EMPTY_MENU(5000, HttpStatus.BAD_REQUEST.value(), "메뉴가 비어있습니다.");
+    STORE_ERROR(6000, HttpStatus.BAD_REQUEST.value(), "가게 정보에 오류가 있습니다."),
+    EMPTY_MENU(6001, HttpStatus.BAD_REQUEST.value(), "메뉴가 비어있습니다."),
+
+    /**
+     * 7000: Order 오류ㅓ
+     */
+    ORDER_ERROR(7000, HttpStatus.BAD_REQUEST.value(), "주문 정보에 오류가 있습니다."),
+    WRONG_ORDER_ID(7001, HttpStatus.BAD_REQUEST.value(), "잘못된 주문ID의 접근입니다.");
 
     private final int code;
     private final int status;

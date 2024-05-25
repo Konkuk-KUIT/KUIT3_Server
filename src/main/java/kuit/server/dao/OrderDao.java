@@ -27,4 +27,12 @@ public class OrderDao {
     public void registerOrder(PostOrderRequest postOrderRequest) {  // TODO: 하하하
         String sql = "insert all";
     }
+
+    public int cancelOrder(long orderId) {
+        String sql = "update `order` set status=:status where order_id=:order_id";
+        Map<String, Object> param = Map.of(
+                "status", "deleted",
+                "order_id", orderId);
+        return jdbcTemplate.update(sql, param); // returns affected row
+    }
 }
