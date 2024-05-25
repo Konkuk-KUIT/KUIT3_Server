@@ -69,6 +69,16 @@ public class UserController {
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+    @PutMapping("/{userId}/UserInfo")
+    public BaseResponse<String> modifyUserInfo(@PathVariable long userId,
+                                               @Validated @RequestBody PutUserInfoRequest putUserInfoRequest, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyUserInfo(userId, putUserInfoRequest);
+        return new BaseResponse<>(null);
+    }
 
     /**
      * 회원 목록 조회
@@ -77,7 +87,7 @@ public class UserController {
     public BaseResponse<List<GetUserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "") String nickname,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "dormant") String status) {
         log.info("[UserController.getUsers]");
         if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);

@@ -7,12 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class PostUserRequest {
+public class PutUserInfoRequest {
 
     @Email(message = "email: 이메일 형식이어야 합니다")
     @NotBlank(message = "email: {NotBlank}")
@@ -30,13 +29,11 @@ public class PostUserRequest {
     @Length(max = 20, message = "phoneNumber: 최대 {max}자리까지 가능합니다")
     private String phoneNumber;
 
-    @Nullable
+    @NotBlank(message = "nickname: {NotBlank}")
     @Length(max = 25, message = "nickname: 최대 {max}자리까지 가능합니다")
     private String nickname;
-
 
     public void resetPassword(String encodedPassword) {
         this.password = encodedPassword;
     }
-
 }

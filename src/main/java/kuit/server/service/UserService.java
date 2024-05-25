@@ -49,12 +49,14 @@ public class UserService {
 
     public void modifyUserStatus_dormant(long userId) {
         log.info("[UserService.modifyUserStatus_dormant]");
-
+        validateDormant(userId);
         int affectedRows = userDao.modifyUserStatus_dormant(userId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
+
+
 
     public void modifyUserStatus_deleted(long userId) {
         log.info("[UserService.modifyUserStatus_deleted]");
@@ -74,7 +76,19 @@ public class UserService {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
-
+    public void modifyUserInfo(long userId, PutUserInfoRequest putUserInfoRequest) {
+        validateEmail(putUserInfoRequest.getEmail());
+        String nickname = putUserInfoRequest.getNickname();
+        if (nickname != null) {
+            validateNickname(putUserInfoRequest.getNickname());
+        }
+        String encodedPassword = passwordEncoder.encode(putUserInfoRequest.getPassword());
+        putUserInfoRequest.resetPassword(encodedPassword);
+        int affectedRows = userDao.modifyUserInfo(userId, putUserInfoRequest);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
@@ -91,5 +105,11 @@ public class UserService {
             throw new UserException(DUPLICATE_NICKNAME);
         }
     }
+    private void validateDormant(long userId) {
+        if(userDao.hasAlreadyDormant(userId)){
+            throw new UserException(ALREADY_DORMANT);
+        }
+    }
+
 
 }
