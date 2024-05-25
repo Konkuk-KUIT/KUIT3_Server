@@ -77,12 +77,12 @@ public class UserController {
     public BaseResponse<List<GetUserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "") String nickname,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "active") String user_status) {
         log.info("[UserController.getUsers]");
-        if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
+        if (!user_status.equals("active") && !user_status.equals("dormant") && !user_status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);
         }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
+        return new BaseResponse<>(userService.getUsers(nickname, email, user_status));
     }
 
 }
