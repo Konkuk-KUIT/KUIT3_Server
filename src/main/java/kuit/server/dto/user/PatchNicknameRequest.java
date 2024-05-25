@@ -12,5 +12,4 @@ public class PatchNicknameRequest {
 
     @NotNull(message = "nickname: {NotNull}")
     private String nickname;
-
 }

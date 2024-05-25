@@ -1,9 +1,10 @@
-spring:
-  profiles:
+spring:   # 환경변수 파일 yml쓰는 이유 계층구조 => 큰 프로젝트에서 관리하기 good~
+  profiles: # application 설정을 특정 환경에서 적용되게 하거나 환경별로 다르게 적용할떄 쓰이는 속성
     group:
       "local": "localDB, devPort, secret, web-mvc"
       "dev": "devDB, devPort, secret, web-mvc"
       "prod": "prodDB, prodPort, secret, web-mvc"
+    active: "local" #개발서버, 실제작동하는 클라우드서버, 로칼, or just set on Edit Configuration on InteliJ
 
 ---
 
@@ -41,7 +42,7 @@ spring:
     init:
       platform: mysql
 
----
+--- #하이픈을 기준으로 muti yml 파일을 구분 할수 있음
 
 spring:
   config:

@@ -4,12 +4,14 @@ import kuit.server.common.response.BaseErrorResponse;
 import jakarta.annotation.Priority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.BAD_DATABASE_ID_REQUEST;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.BAD_SQL_GRAMMAR;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.DATABASE_ERROR;
 
@@ -32,4 +34,10 @@ public class DatabaseExceptionControllerAdvice {
         return new BaseErrorResponse(DATABASE_ERROR);
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public BaseErrorResponse handle_EmptyResultDataAccessException(EmptyResultDataAccessException e) {
+        log.error("[handle_EmptyResultDataAccessException]", e);
+        return new BaseErrorResponse(BAD_DATABASE_ID_REQUEST);
+    }
 }

@@ -3,6 +3,7 @@ package kuit.server.service;
 import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
 import kuit.server.dao.UserDao;
+import kuit.server.dto.user.GetUserOrderHistoryResponse;
 import kuit.server.dto.user.*;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -92,4 +93,14 @@ public class UserService {
         }
     }
 
+    public GetUserResponse getUserInfoByUserId(long userId) {
+        return userDao.getUserByUserId(userId);
+    }
+
+
+    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId) {
+        List<GetUserOrderHistoryResponse> orders = userDao.getOrderByUserId(userId);
+        // 빈값도 오류가 아님
+        return orders;
+    }
 }
