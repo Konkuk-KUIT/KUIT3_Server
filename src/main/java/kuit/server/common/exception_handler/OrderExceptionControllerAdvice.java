@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @Priority(0)
 @RestControllerAdvice
-public class OrderExceptionControllerHandler {
+public class OrderExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(OrderException.class)
     public BaseErrorResponse handle_UserException(OrderException e) {
