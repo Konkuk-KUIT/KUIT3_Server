@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Repository //data access object (DB와 상호작용)
@@ -125,4 +126,9 @@ public class UserDao {
         ));
     }
 
+    // 특정 회원 핸드폰 번호 조회
+    public Optional<String> getPhoneNumberById(long userId) {
+        String sql = "SELECT phone_number FROM user WHERE user_id = :userId";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Map.of("userId", userId), String.class));
+    }
 }

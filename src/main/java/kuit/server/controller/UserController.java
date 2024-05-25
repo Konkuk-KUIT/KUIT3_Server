@@ -36,6 +36,15 @@ public class UserController {
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
 
+    //휴대폰번호 조회
+    @GetMapping("/{userId}/phone_number")
+    public BaseResponse<GetUserPhoneResponse> getPhoneNumber(@PathVariable long userId) {
+        String phoneNumber = userService.getPhoneNumberById(userId);
+        return new BaseResponse<>(new GetUserPhoneResponse(userId, phoneNumber));
+    }
+
+
+
     /**
      * 회원 휴면
      */

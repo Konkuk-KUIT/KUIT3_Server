@@ -2,6 +2,7 @@ package kuit.server.service;
 
 import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
+import kuit.server.common.response.status.BaseExceptionResponseStatus;
 import kuit.server.dao.UserDao;
 import kuit.server.dto.user.*;
 import kuit.server.util.jwt.JwtTokenProvider;
@@ -86,7 +87,7 @@ public class UserService {  //비즈니스 로직
     }
 
     // 특정 회원 조회
-    public  GetUserResponse getUserById(long userId) {
+    public GetUserResponse getUserById(long userId) {
         log.info("[UserService.getUserById]", userId);
         return userDao.findUserById(userId);
     }
@@ -108,4 +109,8 @@ public class UserService {  //비즈니스 로직
         }
     }
 
+    public String getPhoneNumberById(long userId) {
+        return userDao.getPhoneNumberById(userId)
+                .orElseThrow(() -> new UserException(BaseExceptionResponseStatus.USER_NOT_FOUND, "User with ID " + userId + " not found"));
+    }
 }
