@@ -30,9 +30,12 @@ public class UserController {
     @PostMapping("")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
+
+        log.info("users post :: " + postUserRequest);
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
 
@@ -83,6 +86,16 @@ public class UserController {
             throw new UserException(INVALID_USER_STATUS);
         }
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
+    }
+
+    /*
+    프로필 이미지 변경
+     */
+    @PatchMapping("{userId}/profile")
+    public BaseResponse<Object> createAddress(@PathVariable Long userId,
+                                              @RequestBody PatchProfileImageRequest patchProfileImageRequest){
+        userService.modifyProfile_image(userId, patchProfileImageRequest.getProfile_image());
+        return new BaseResponse<>(null);
     }
 
 }

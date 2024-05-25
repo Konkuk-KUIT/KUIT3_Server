@@ -92,4 +92,10 @@ public class UserService {
         }
     }
 
+    public void modifyProfile_image(Long userId, String profileImage) {
+        int affectedRows = userDao.modifyProfile_image(userId, profileImage);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
 }
