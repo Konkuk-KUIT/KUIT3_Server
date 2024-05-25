@@ -12,9 +12,8 @@ import lombok.Setter;
 public class GetUserResponse {
 
     private String email;
-    private String phoneNumber;
-    private String nickname;
-    private String profileImage;
+    private String phone;
+    private String name;
     private String status;
 
 }

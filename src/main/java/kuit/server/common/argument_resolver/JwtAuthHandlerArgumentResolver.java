@@ -25,7 +25,7 @@ public class JwtAuthHandlerArgumentResolver implements HandlerMethodArgumentReso
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         log.info("[JwtAuthHandlerArgumentResolver.resolveArgument]");
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        return request.getAttribute("userId");
+        return request.getAttribute("userid");
     }
 
 }

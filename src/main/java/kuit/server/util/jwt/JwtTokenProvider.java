@@ -22,7 +22,7 @@ public class JwtTokenProvider {
     @Value("${secret.jwt-expired-in}")
     private long JWT_EXPIRED_IN;
 
-    public String createToken(String principal, long userId) {
+    public String createToken(String principal, long userid) {
         log.info("JWT key={}", JWT_SECRET_KEY);
 
         Claims claims = Jwts.claims().setSubject(principal);
@@ -33,7 +33,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .claim("userId", userId)
+                .claim("userid", userid)
                 .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
                 .compact();
     }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.SUCCESS;
-
+// 성공 응답 객체
 @Getter
 @JsonPropertyOrder({"code", "status", "message", "result"})
 public class BaseResponse<T> implements ResponseStatus {
