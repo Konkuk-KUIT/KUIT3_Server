@@ -63,5 +63,14 @@ public class StoreDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
 
+    public int modifyFoodCategory(long storeId, String foodCategory) {
+        String sql = "UPDATE store SET food_category = :foodCategory WHERE store_id = :storeId";
+        Map<String, Object> params = Map.of(
+                "storeId", storeId,
+                "foodCategory", foodCategory
+
+                );
+        return jdbcTemplate.update(sql, params);
+    }
 }
 

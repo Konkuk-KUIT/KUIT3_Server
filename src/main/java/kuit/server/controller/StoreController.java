@@ -3,8 +3,10 @@ package kuit.server.controller;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.store.GetStoreResponse;
+import kuit.server.dto.store.PatchFoodCategoryRequest;
 import kuit.server.dto.store.PostStoreRequest;
 import kuit.server.service.StoreService;
+import kuit.server.util.BindingResultUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -49,5 +51,16 @@ public class StoreController {
     public BaseResponse<GetStoreResponse> getStoreById(@PathVariable long storeId) {
         GetStoreResponse storeResponse = storeService.getStoreById(storeId);
         return new BaseResponse<>(storeResponse);
+    }
+
+    @PatchMapping("/{storeId}/food_category")
+    public BaseResponse<Void> updateFoodCategory(@PathVariable long storeId,
+                                                 @Validated @RequestBody PatchFoodCategoryRequest request,
+                                                 BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, BindingResultUtils.getErrorMessages(bindingResult));
+        }
+        storeService.modifyFoodCategory(storeId, request.getFoodCategory());
+        return new BaseResponse<>(null);
     }
 }

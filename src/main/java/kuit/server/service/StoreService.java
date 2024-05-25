@@ -39,4 +39,11 @@ public class StoreService {
             throw new StoreException(DUPLICATE_STORENAME);
         }
     }
+
+    public void modifyFoodCategory(long storeId, String foodCategory) {
+        int affectedRows = storeDao.modifyFoodCategory(storeId, foodCategory);
+        if (affectedRows != 1) {
+            throw new RuntimeException("store 업데이트 실패");
+        }
+    }
 }
