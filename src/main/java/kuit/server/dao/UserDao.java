@@ -41,7 +41,7 @@ public class UserDao {
         String sql = "insert into user(email, password, phone_number, nickname, profile_image) " +
                 "values(:email, :password, :phoneNumber, :nickname, :profileImage)";
 
-        SqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
+        BeanPropertySqlParameterSource param = new BeanPropertySqlParameterSource(postUserRequest);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(sql, param, keyHolder);
 
@@ -68,6 +68,22 @@ public class UserDao {
         String sql = "update user set nickname=:nickname where user_id=:user_id";
         Map<String, Object> param = Map.of(
                 "nickname", nickname,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    public int modifyPassword(long userId, String password) {
+        String sql = "update user set password=:password where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "password", password,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
+    public int modifyPhoneNumber(long userId, String phone_number) {
+        String sql = "update user set phone_number=:phone_number where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "phone_number", phone_number,
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }

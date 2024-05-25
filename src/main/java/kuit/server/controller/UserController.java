@@ -4,16 +4,19 @@ import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
 import kuit.server.service.UserService;
+import kuit.server.util.BindingResultUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Binding;
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
+import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @Slf4j
@@ -23,6 +26,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 public class UserController {
 
     private final UserService userService;
+    //private final PostUserRequestValidator postUserRequestValidator;
+
+//    @InitBinder
+//    public void init(WebDataBinder dataBinder){
+//        log.info("init binder {}",dataBinder);
+//        dataBinder.addValidators(postUserRequestValidator);
+//    }
 
     /**
      * 회원 가입
@@ -30,8 +40,11 @@ public class UserController {
     @PostMapping("")
     public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
         log.info("[UserController.signUp]");
+
+        //postUserRequestValidator.validate(postUserRequest, bindingResult);
+
         if (bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+            throw new UserException(INVALID_USER_VALUE, BindingResultUtils.getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
@@ -69,6 +82,35 @@ public class UserController {
         userService.modifyNickname(userId, patchNicknameRequest.getNickname());
         return new BaseResponse<>(null);
     }
+
+    /**
+     * 비밀번호 변경
+     */
+    @PatchMapping("/{userId}/password")
+    public BaseResponse<String> modifyPassword(@PathVariable long userId,
+                                               @Validated @RequestBody PatchPasswordRequest patchPasswordRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyPassword");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_PASSWORD, getErrorMessages(bindingResult));
+        }
+        userService.modifyPassword(userId, patchPasswordRequest.getPassword());
+        return new BaseResponse<>(null);
+    }
+
+    /**
+     * 휴대폰 번호 변경
+     */
+    @PatchMapping("/{userId}/phone_number")
+    public BaseResponse<String> modifyPhoneNumber(@PathVariable long userId,
+                                                  @Validated @RequestBody PatchPhoneNumberRequest patchPhoneNumberRequest, BindingResult bindingResult){
+        log.info("[UserController.modifyPhoneNumber");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_PHONE_NUMBER, getErrorMessages(bindingResult));
+        }
+        userService.modifyPhoneNumber(userId, patchPhoneNumberRequest.getPhoneNumber());
+        return new BaseResponse<>(null);
+    }
+
 
     /**
      * 회원 목록 조회
