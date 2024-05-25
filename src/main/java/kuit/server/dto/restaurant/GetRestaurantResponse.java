@@ -1,4 +1,4 @@
-package kuit.server.dto.user;
+package kuit.server.dto.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetUserResponse {
-
-    private String email;
+public class GetRestaurantResponse {
+    private String name;
+    private String category;
+    private String address;
     private String phoneNumber;
-    private String nickname;
     private String status;
-
 }
