@@ -2,6 +2,7 @@ package kuit.server.service;
 
 import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
+import kuit.server.common.response.status.BaseExceptionResponseStatus;
 import kuit.server.dao.UserDao;
 import kuit.server.dto.user.*;
 import kuit.server.util.jwt.JwtTokenProvider;
@@ -16,9 +17,9 @@ import java.util.List;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Slf4j
-@Service
+@Service //@Component 가지고 있음
 @RequiredArgsConstructor
-public class UserService {
+public class UserService {  //비즈니스 로직
 
     private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
@@ -75,6 +76,27 @@ public class UserService {
         }
     }
 
+    public void modifyPassword(long userId, String password) {
+        log.info("[UserService.modifyPassword]");
+
+        if(validatePassword(password)){
+            throw new UserException(INVALID_PASSWORD,"password가 유효하지 않습니다.");
+        }
+
+        String encodedPassword = passwordEncoder.encode(password);
+
+        int affectedRows = userDao.modifyPassword(userId, encodedPassword);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 특정 회원 조회
+    public GetUserResponse getUserById(long userId) {
+        log.info("[UserService.getUserById]", userId);
+        return userDao.findUserById(userId);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         log.info("[UserService.getUsers]");
         return userDao.getUsers(nickname, email, status);
@@ -92,4 +114,12 @@ public class UserService {
         }
     }
 
+    public String getPhoneNumberById(long userId) {
+        return userDao.getPhoneNumberById(userId)
+                .orElseThrow(() -> new UserException(BaseExceptionResponseStatus.USER_NOT_FOUND, "User with ID " + userId + " not found"));
+    }
+
+    private boolean validatePassword(String password) {
+        return password.matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])(?=\\S+$).{8,}$");
+    }
 }

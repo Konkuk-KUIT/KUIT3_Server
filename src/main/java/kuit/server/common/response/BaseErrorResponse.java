@@ -19,7 +19,7 @@ public class BaseErrorResponse implements ResponseStatus {
         this.code = status.getCode();
         this.status = status.getStatus();
         this.message = status.getMessage();
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now(); // 시간정보로 빠른 해결을 도움
     }
 
     public BaseErrorResponse(ResponseStatus status, String message) {

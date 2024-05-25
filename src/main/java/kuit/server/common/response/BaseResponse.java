@@ -16,7 +16,7 @@ public class BaseResponse<T> implements ResponseStatus {
     private final String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final T result;
+    private final T result; //요청결과에 대한 정보를 담음 (제네릭 타입 이용해서 확장성 고려)
 
     public BaseResponse(T result) {
         this.code = SUCCESS.getCode();

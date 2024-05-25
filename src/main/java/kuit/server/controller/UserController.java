@@ -36,6 +36,15 @@ public class UserController {
         return new BaseResponse<>(userService.signUp(postUserRequest));
     }
 
+    //휴대폰번호 조회
+    @GetMapping("/{userId}/phone_number")
+    public BaseResponse<GetUserPhoneResponse> getPhoneNumber(@PathVariable long userId) {
+        String phoneNumber = userService.getPhoneNumberById(userId);
+        return new BaseResponse<>(new GetUserPhoneResponse(userId, phoneNumber));
+    }
+
+
+
     /**
      * 회원 휴면
      */
@@ -70,6 +79,17 @@ public class UserController {
         return new BaseResponse<>(null);
     }
 
+    @PatchMapping("/{userId}/password")
+    public BaseResponse<String> modifyPassword(@PathVariable long userId,
+                                               @Validated @RequestBody PatchPasswordRequest patchPasswordRequest, BindingResult bindingResult) {
+        log.info("[UserController.modifyPassword]");
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+        userService.modifyPassword(userId, patchPasswordRequest.getPassword());
+        return new BaseResponse<>(null);
+    }
+
     /**
      * 회원 목록 조회
      */
@@ -85,4 +105,11 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+    // 특정 유저 조회
+    @GetMapping("/{userId}") //@PathVariable 통해 {userId} 처리
+    public BaseResponse<GetUserResponse> getUserById(@PathVariable long userId){
+        log.info("[UserController.getUserById]",userId);
+        GetUserResponse userResponse = userService.getUserById(userId);
+        return new BaseResponse<>(userResponse);
+    }
 }

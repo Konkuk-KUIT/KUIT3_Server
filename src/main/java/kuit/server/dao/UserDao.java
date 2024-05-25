@@ -14,9 +14,10 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
-@Repository
+@Repository //data access object (DB와 상호작용)
 public class UserDao {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -72,6 +73,14 @@ public class UserDao {
         return jdbcTemplate.update(sql, param);
     }
 
+    public int modifyPassword(long userId, String password) {
+        String sql = "update user set password=:password where user_id=:user_id";
+        Map<String, Object> param = Map.of(
+                "password", password,
+                "user_id", userId);
+        return jdbcTemplate.update(sql, param);
+    }
+
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
         String sql = "select email, phone_number, nickname, profile_image, status from user " +
                 "where nickname like :nickname and email like :email and status=:status";
@@ -101,6 +110,26 @@ public class UserDao {
         String sql = "select password from user where user_id=:user_id and status='active'";
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
+    }
+
+    //특정 회원 조회
+    public  GetUserResponse findUserById(long userId){
+        String sql = "SELECT * FROM user WHERE user_id = :userId"; //userId와 일치하는 행 선택
+        Map<String, Object> params = Map.of("userId",userId); //쿼리에서 사용될 매개변수 이름, 값 매핑
+        //queryforobject 메서드를 통해 sql 쿼리 실행, 결과를 객체로 매핑 => GetUserResponse 생성자를 사용
+        return jdbcTemplate.queryForObject(sql,params,(rs,rowNum)-> new GetUserResponse(
+                rs.getString("email"),
+                rs.getString("phone_number"),
+                rs.getString("nickname"),
+                rs.getString("profile_image"),
+                rs.getString("status")
+        ));
+    }
+
+    // 특정 회원 핸드폰 번호 조회
+    public Optional<String> getPhoneNumberById(long userId) {
+        String sql = "SELECT phone_number FROM user WHERE user_id = :userId";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Map.of("userId", userId), String.class));
     }
 
 }
