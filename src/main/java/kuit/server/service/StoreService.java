@@ -25,8 +25,11 @@ public class StoreService {
     }
 
     public void modifyStoreStatus_deleted(long storeId) {
-        int affectedRows = storeDao.modifyStoreStatus_deleted(storeId);
 
+        int affectedRows = storeDao.modifyStoreStatus_deleted(storeId);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
     }
 
     public List<GetStoreResponse> getAllStores() {
@@ -35,6 +38,9 @@ public class StoreService {
 
     public void modifyStoreStatus_dormant(long storeId) {
         int affectedRows = storeDao.modifyStoreStatus_dormant(storeId);
+        if (affectedRows != 1) {
+            throw new DatabaseException(DATABASE_ERROR);
+        }
     }
 
 }
