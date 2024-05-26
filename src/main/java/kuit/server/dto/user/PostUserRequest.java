@@ -28,14 +28,14 @@ public class PostUserRequest {
 
     @NotBlank(message = "phoneNumber: {NotBlank}")
     @Length(max = 20, message = "phoneNumber: 최대 {max}자리까지 가능합니다")
-    private String phoneNumber;
+    private String phone;
 
     @Nullable
-    @Length(max = 25, message = "nickname: 최대 {max}자리까지 가능합니다")
-    private String nickname;
+    @Length(max = 25, message = "name: 최대 {max}자리까지 가능합니다")
+    private String name;
 
     @Nullable
-    private String profileImage;
+    private String address;
 
     public void resetPassword(String encodedPassword) {
         this.password = encodedPassword;

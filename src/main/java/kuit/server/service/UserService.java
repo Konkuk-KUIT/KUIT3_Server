@@ -24,14 +24,19 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public List<GetUserResponse> getUsers(String name, String email, String status) {
+        log.info("[UserService.getUsers]");
+        return userDao.getUsers(name, email, status);
+    }
+
     public PostUserResponse signUp(PostUserRequest postUserRequest) {
         log.info("[UserService.createUser]");
 
         // TODO: 1. validation (중복 검사)
         validateEmail(postUserRequest.getEmail());
-        String nickname = postUserRequest.getNickname();
-        if (nickname != null) {
-            validateNickname(postUserRequest.getNickname());
+        String name = postUserRequest.getName();
+        if (name != null) {
+            validateName(postUserRequest.getName());
         }
 
         // TODO: 2. password 암호화
@@ -43,41 +48,38 @@ public class UserService {
 
         // TODO: 4. JWT 토큰 생성
         String jwt = jwtTokenProvider.createToken(postUserRequest.getEmail(), userId);
-
         return new PostUserResponse(userId, jwt);
     }
 
-    public void modifyUserStatus_dormant(long userId) {
-        log.info("[UserService.modifyUserStatus_dormant]");
+    public void updateUserByEmail(String email, PostUserRequest postUserRequest) {
+        log.info("[UserService.updateUserByEmail");
 
-        int affectedRows = userDao.modifyUserStatus_dormant(userId);
+        String encodedPassword = passwordEncoder.encode(postUserRequest.getPassword());
+        postUserRequest.resetPassword(encodedPassword);
+
+        int affectedRows = userDao.modifyUserByEmail(email, postUserRequest);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
 
-    public void modifyUserStatus_deleted(long userId) {
-        log.info("[UserService.modifyUserStatus_deleted]");
+    public void modifyUserStatus_inactive(long userId) {
+        log.info("[UserService.modifyUserStatus_inactive]");
 
-        int affectedRows = userDao.modifyUserStatus_deleted(userId);
+        int affectedRows = userDao.modifyUserStatus_inactive(userId);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
 
-    public void modifyNickname(long userId, String nickname) {
-        log.info("[UserService.modifyNickname]");
+    public void modifyName(long userId, String name) {
+        log.info("[UserService.modifyName]");
 
-        validateNickname(nickname);
-        int affectedRows = userDao.modifyNickname(userId, nickname);
+        validateName(name);
+        int affectedRows = userDao.modifyName(userId, name);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
-    }
-
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        log.info("[UserService.getUsers]");
-        return userDao.getUsers(nickname, email, status);
     }
 
     private void validateEmail(String email) {
@@ -86,9 +88,9 @@ public class UserService {
         }
     }
 
-    private void validateNickname(String nickname) {
-        if (userDao.hasDuplicateNickName(nickname)) {
-            throw new UserException(DUPLICATE_NICKNAME);
+    private void validateName(String name) {
+        if (userDao.hasDuplicateName(name)) {
+            throw new UserException(DUPLICATE_NAME);
         }
     }
 
