@@ -1,8 +1,12 @@
 package kuit.server.dao;
 
 import kuit.server.dto.user.GetUserResponse;
+import kuit.server.dto.user.PostLoginRequest;
+import kuit.server.dto.user.PostLoginResponse;
 import kuit.server.dto.user.PostUserRequest;
+import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -51,7 +55,7 @@ public class UserDao {
     public int modifyUserStatus_dormant(long userId) {
         String sql = "update user set status=:status where user_id=:user_id";
         Map<String, Object> param = Map.of(
-                "status", "dormant",
+                "status", "휴먼",
                 "user_id", userId);
         return jdbcTemplate.update(sql, param);
     }
@@ -73,8 +77,7 @@ public class UserDao {
     }
 
     public List<GetUserResponse> getUsers(String nickname, String email, String status) {
-        String sql = "select email, phone_number, nickname, profile_image, status from user " +
-                "where nickname like :nickname and email like :email and status=:status";
+        String sql = "select email, phone_number, nickname, profile_image, status from user ";
 
         Map<String, Object> param = Map.of(
                 "nickname", "%" + nickname + "%",
@@ -102,5 +105,18 @@ public class UserDao {
         Map<String, Object> param = Map.of("user_id", userId);
         return jdbcTemplate.queryForObject(sql, param, String.class);
     }
+
+    public long login(PostLoginRequest postLoginRequest) {
+        String sql = "select user_id from user where email=:email and  status='일반'";
+        Map<String, Object> param = Map.of(
+                "email", postLoginRequest.getEmail()
+        );
+        Long userId = jdbcTemplate.queryForObject(sql, param, Long.class);
+        return userId;
+    }
+    //로그인 현재 해싱된 Password를 가지고 데이터베이스에 있는 값과 비교하는 방법을 잘 모르겠어서 email로만 확인하였습니다
+    
+
+
 
 }
