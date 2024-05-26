@@ -92,4 +92,11 @@ public class UserService {
         }
     }
 
+    public List<UserOrdersResponse> getOrders(Long userId) {
+        return userDao.getOrders(userId);
+    }
+
+    public void createAddress(String userId, UserAddressRequest userAddressRequest) {
+        userDao.createAddress(userId,userAddressRequest);
+    }
 }

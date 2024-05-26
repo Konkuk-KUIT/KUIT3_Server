@@ -85,4 +85,24 @@ public class UserController {
         return new BaseResponse<>(userService.getUsers(nickname, email, status));
     }
 
+
+    // 유저가 주문한 모든 주문 내역 가져오기
+    @GetMapping("/{userId}/orders")
+    public BaseResponse<List<UserOrdersResponse>> getOrders(@PathVariable Long userId){
+
+        return new BaseResponse<>(userService.getOrders(userId));
+    }
+
+
+    // 주소 추가하기
+    @PostMapping("/{userId}/address")
+    public BaseResponse<String> createAddress(@PathVariable String userId,
+                                              @Validated @RequestBody UserAddressRequest userAddressRequest, BindingResult bindingResult ){
+        if (bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
+        }
+
+        userService.createAddress(userId,userAddressRequest);
+        return new BaseResponse<>(null);
+    }
 }
