@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,13 @@ import static kuit.server.util.BindingResultUtils.getErrorMessages;
 public class UserController {
 
     private final UserService userService;
+    private final PostUserRequestValidator postUserRequestValidator;
+
+    @InitBinder
+    public void init(WebDataBinder dataBinder){
+        log.info("init binder {}", dataBinder);
+        dataBinder.addValidators(postUserRequestValidator);
+    }
 
     /**
      * 회원 가입
