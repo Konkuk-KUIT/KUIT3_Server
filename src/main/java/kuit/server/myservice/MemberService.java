@@ -4,23 +4,27 @@ import kuit.server.common.exception.DatabaseException;
 import kuit.server.common.exception.UserException;
 import kuit.server.mydao.MemberDao;
 import kuit.server.mydto.member.*;
+import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
 
 @Service
+@Transactional(rollbackFor = UserException.class)
 @Slf4j
 @RequiredArgsConstructor
 public class MemberService {
 
     private final MemberDao memberDao;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public String updatePassword(long userId, PatchPasswordReq patchPasswordReq) {
         log.info("MemberService.updatePassword");
@@ -60,13 +64,16 @@ public class MemberService {
     public PostMemberResp signUp(PostMemberReq postMemberReq) {
         log.info("MemberService.signUp");
 
+        // FIXME : DTO에 Nullable로 설정한 부분만 null인지 확인하기, 검증하기
         if(postMemberReq.getNickName() != null) {
             validateNickName(postMemberReq.getNickName());
         }
         validateEmail(postMemberReq.getEmail());
-
+        // FIXME : jwt 및 비번 인코딩
+        String encodedPassword = passwordEncoder.encode(postMemberReq.getPassword());
+        postMemberReq.setPassword(encodedPassword);
         long userId = memberDao.createMember(postMemberReq);
-        String jwt = "1212";
+        String jwt = jwtTokenProvider.createToken(postMemberReq.getEmail(), userId);
         return new PostMemberResp(userId, jwt);
     }
 
@@ -97,5 +104,20 @@ public class MemberService {
             throw new DatabaseException(DATABASE_ERROR);
         }
         return "complete changing user Info";
+    }
+
+    public String findUser(String nickName, String email) {
+        log.info("MemberService.findUser");
+        try {
+            long userId = memberDao.findUserIdByNickName(nickName);
+        } catch(IncorrectResultSizeDataAccessException e) {
+            throw new UserException(USER_NOT_FOUND);
+        }
+        try {
+          memberDao.
+        } catch(IncorrectResultSizeDataAccessException e) {
+            throw new UserException(EMAIL_NOT_FOUND);
+        }
+
     }
 }

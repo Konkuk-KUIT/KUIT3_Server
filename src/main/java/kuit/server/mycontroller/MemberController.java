@@ -67,4 +67,13 @@ public class MemberController {
         }
         return new BaseResponse<>(memberService.updateAllInfo(userId, postMemberReq));
     }
+
+    @GetMapping("")
+    public BaseResponse<String> findUser(@PathVariable String nickName, @PathVariable String email, BindingResult bindingResult) {
+        log.info("MemberController.findUser");
+        if(bindingResult.hasErrors()) {
+            throw new UserException(INVALID_USER_VALUE);
+        }
+        return new BaseResponse<>(memberService.findUser(nickName, email));
+    }
 }

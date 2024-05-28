@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.lang.Nullable;
 
 @Getter
-@Setter
+@Setter()
 @NoArgsConstructor
 public class PostMemberReq {
 
