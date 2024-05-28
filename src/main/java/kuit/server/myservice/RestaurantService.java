@@ -41,8 +41,8 @@ public class RestaurantService {
     }
 
     //카테고리별 식당 조회하기
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price) {
-        return restaurantDao.getCategorizedRestaurants(category, min_price);
+    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price, int page) {
+        return restaurantDao.getCategorizedRestaurants(category, min_price, page);
     }
 
     //메뉴 등록 하기

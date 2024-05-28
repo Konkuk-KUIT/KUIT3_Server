@@ -58,7 +58,7 @@ public class MemberService {
             throw new UserException(EMAIL_NOT_FOUND);
         }
         validatePassword(password, userId);
-        String jwt = "12121";
+        String jwt = jwtTokenProvider.createToken(email, userId);
         return new PostLoginResp(userId, jwt);
     }
 

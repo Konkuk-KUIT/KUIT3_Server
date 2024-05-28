@@ -40,10 +40,16 @@ public class RestaurantDao {
 
     public List<RestaurantMenuResp> getRestaurantFoods(long restaurant_PK) {
         log.info("RestaurantDao.getRestaurantFoods");
-        String sql = "select * from food f join restaurant r on f.restaurant_PK = r.restaurant_PK" +
-                "where f.restaurant_PK = ?";
+        String sql = "select f.name as food_name, f.price as food_price " +
+                "from food f join restaurant r on f.restaurant_PK = r.restaurant_PK " +
+                "where f.restaurant_PK = :restaurant_PK";
         Map<String, Object> param = Map.of("restaurant_PK", restaurant_PK);
-        return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<>(RestaurantMenuResp.class));
+        return jdbcTemplate.query(sql, param, (rs, rowNum) -> {
+            RestaurantMenuResp foodInfo = new RestaurantMenuResp(
+                    rs.getString("food_name"),
+                    rs.getLong("food_price"));
+            return foodInfo;
+        });
     }
 
     public List<GetCategoryResp> listUpCategories() {
@@ -55,7 +61,7 @@ public class RestaurantDao {
         });
     }
 
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price) {
+    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price, int page) {
         String sql = "select * from restaurant where category = :category and min_price >= :min_price";
 
         Map<String, Object> param = new HashMap<>();

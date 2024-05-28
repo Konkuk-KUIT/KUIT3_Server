@@ -51,10 +51,10 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getRestaurantFoods(restaurant_PK));
     }
 
-    @GetMapping("/{category}")
-    public BaseResponse<List<GetCategorizedRestaurantResp>> getCategorizedRestaurants(@PathVariable String category, @RequestParam long min_price) {
+    @GetMapping("/{category}/{page}")
+    public BaseResponse<List<GetCategorizedRestaurantResp>> getCategorizedRestaurants(@PathVariable String category, @PathVariable Integer page, @RequestParam long min_price) {
         log.info("RestaurantController.getCategorizedRestaurants");
-        return new BaseResponse<>(restaurantService.getCategorizedRestaurants(category, min_price));
+        return new BaseResponse<>(restaurantService.getCategorizedRestaurants(category, min_price, page));
     }
 
     @PostMapping("/{restaurant_PK}/addMenu")
@@ -66,4 +66,6 @@ public class RestaurantController {
 
         return new BaseResponse<>(restaurantService.addMenu(restaurant_PK ,postMenuReq));
     }
+
+
 }
