@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
@@ -40,7 +41,7 @@ public class MemberService {
         validateEmail(patchEmailReq.getEmail());
         int result = memberDao.updateUserEmail(userId, patchEmailReq.getEmail());
         if(result != 1) {
-            throw new DatabaseException(DATABASE_ERROR);
+            throw new UserException(EMAIL_NOT_FOUND);
         }
         return "complete changing Email";
     }
@@ -106,18 +107,12 @@ public class MemberService {
         return "complete changing user Info";
     }
 
-    public String findUser(String nickName, String email) {
+    public List<GetUserInfoResp> findUser(String nickName, String email) {
         log.info("MemberService.findUser");
         try {
-            long userId = memberDao.findUserIdByNickName(nickName);
-        } catch(IncorrectResultSizeDataAccessException e) {
+            return memberDao.findUserInfo(nickName, email);
+        } catch (IncorrectResultSizeDataAccessException e) {
             throw new UserException(USER_NOT_FOUND);
         }
-        try {
-          memberDao.
-        } catch(IncorrectResultSizeDataAccessException e) {
-            throw new UserException(EMAIL_NOT_FOUND);
-        }
-
     }
 }

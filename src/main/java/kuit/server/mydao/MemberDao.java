@@ -1,9 +1,11 @@
 package kuit.server.mydao;
 
 import kuit.server.common.exception.UserException;
+import kuit.server.mydto.member.GetUserInfoResp;
 import kuit.server.mydto.member.PostMemberReq;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -90,6 +93,19 @@ public class MemberDao {
                 "phone_number", postMemberReq.getPhoneNumber(), "nickname", postMemberReq.getNickName(),
                 "profile_image", postMemberReq.getProfileImage(), "userId", userId);
         return jdbcTemplate.update(sql, param);
+    }
+
+    public List<GetUserInfoResp> findUserInfo(String nickName, String email) {
+        log.info("MemberDao.findUserInfo");
+        String sql = "select password, phone_number, profile_image from user where nickname = :nickName and email = :email";
+        Map<String, Object> param = Map.of("nickName", nickName, "email", email);
+        return jdbcTemplate.query(sql, param, (rs, rowNum) -> {
+            GetUserInfoResp info = new GetUserInfoResp(
+                    rs.getString("password"),
+                    rs.getString("phone_number"),
+                    rs.getString("profile_image"));
+            return info;
+        });
     }
 }
 

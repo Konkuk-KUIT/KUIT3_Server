@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
@@ -45,7 +47,7 @@ public class MemberController {
     public BaseResponse<String> updateEmail(@PathVariable long userId, @Validated @RequestBody PatchEmailReq patchEmailReq, BindingResult bindingResult) {
         log.info("MemberController.updateEmail");
         if(bindingResult.hasErrors()) {
-            throw new RuntimeException(getErrorMessages(bindingResult));
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(memberService.updateEmail(userId, patchEmailReq));
     }
@@ -63,17 +65,14 @@ public class MemberController {
     public BaseResponse<String> updateAllInfo(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
         log.info("MemberController.updateAllInfo");
         if(bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE);
+            throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
         return new BaseResponse<>(memberService.updateAllInfo(userId, postMemberReq));
     }
 
-    @GetMapping("")
-    public BaseResponse<String> findUser(@PathVariable String nickName, @PathVariable String email, BindingResult bindingResult) {
+    @GetMapping("/userInfo")
+    public BaseResponse<List<GetUserInfoResp>> findUser(@RequestParam("nickname") String nickName, @RequestParam("email") String email) {
         log.info("MemberController.findUser");
-        if(bindingResult.hasErrors()) {
-            throw new UserException(INVALID_USER_VALUE);
-        }
         return new BaseResponse<>(memberService.findUser(nickName, email));
     }
 }
