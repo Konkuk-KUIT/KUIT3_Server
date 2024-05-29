@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
@@ -40,9 +41,14 @@ public class UserController {
     /**
      * 회원 휴면
      */
-    @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_dormant]");
+    @PatchMapping("/dormant")
+    public BaseResponse<Object> modifyUserStatus_dormant(HttpServletRequest request) {
+        Object userIdAttribute = request.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalStateException("userId 속성이 요청에 없습니다.");
+        }
+        long userId = (Long) userIdAttribute;
+        log.info("[UserController.modifyUserStatus_dormant] UserId: {}", userId);
         userService.modifyUserStatus_dormant(userId);
         return new BaseResponse<>(null);
     }
@@ -50,9 +56,14 @@ public class UserController {
     /**
      * 회원 탈퇴
      */
-    @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_delete]");
+    @PatchMapping("/deleted")
+    public BaseResponse<Object> modifyUserStatus_deleted(HttpServletRequest request) {
+        Object userIdAttribute = request.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalStateException("userId 속성이 요청에 없습니다.");
+        }
+        long userId = (Long) userIdAttribute;
+        log.info("[UserController.modifyUserStatus_delete] UserId: {}", userId);
         userService.modifyUserStatus_deleted(userId);
         return new BaseResponse<>(null);
     }

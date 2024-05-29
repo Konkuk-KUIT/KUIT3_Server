@@ -49,6 +49,7 @@ public class UserService {
         return new PostUserResponse(userId, jwt);
     }
 
+    @Transactional
     public void modifyUserStatus_dormant(long userId) {
         log.info("[UserService.modifyUserStatus_dormant]");
 
@@ -57,7 +58,7 @@ public class UserService {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public void modifyUserStatus_deleted(long userId) {
         log.info("[UserService.modifyUserStatus_deleted]");
 
