@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
@@ -59,10 +60,12 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
-                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
+    @PatchMapping("/nickname")
+    public BaseResponse<String> modifyNickname(@Validated @RequestBody PatchNicknameRequest patchNicknameRequest,
+                                               BindingResult bindingResult,
+                                               @PreAuthorize long userId) {
         log.info("[UserController.modifyNickname]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }

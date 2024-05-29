@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.beans.Transient;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
@@ -65,10 +67,13 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void modifyNickname(long userId, String nickname) {
         log.info("[UserService.modifyNickname]");
 
+        // TODO: 1. 닉네임 중복 검사
         validateNickname(nickname);
+        // TODO: 2. DB update
         int affectedRows = userDao.modifyNickname(userId, nickname);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
