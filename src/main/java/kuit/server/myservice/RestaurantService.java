@@ -1,6 +1,7 @@
 package kuit.server.myservice;
 
 import kuit.server.common.exception.UserException;
+import kuit.server.mycontroller.PageCondition;
 import kuit.server.mydao.RestaurantDao;
 import kuit.server.mydto.retaurant.GetCategorizedRestaurantResp;
 import kuit.server.mydto.retaurant.GetCategoryResp;
@@ -41,8 +42,11 @@ public class RestaurantService {
     }
 
     //카테고리별 식당 조회하기
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price, int page) {
-        return restaurantDao.getCategorizedRestaurants(category, min_price, page);
+    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, PageCondition pageCondition) {
+        if(pageCondition.getSortDirectionBy().isBlank()) {
+            pageCondition.setSortDirectionBy("desc");
+        }
+        return restaurantDao.getCategorizedRestaurants(category, pageCondition);
     }
 
     //메뉴 등록 하기

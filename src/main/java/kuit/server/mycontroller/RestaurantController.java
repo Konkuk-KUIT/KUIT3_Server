@@ -12,6 +12,7 @@ import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
 import kuit.server.myservice.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -51,10 +52,17 @@ public class RestaurantController {
         return new BaseResponse<>(restaurantService.getRestaurantFoods(restaurant_PK));
     }
 
-    @GetMapping("/{category}/{page}")
-    public BaseResponse<List<GetCategorizedRestaurantResp>> getCategorizedRestaurants(@PathVariable String category, @PathVariable Integer page, @RequestParam long min_price) {
+    @GetMapping("/{category}")
+    public BaseResponse<List<GetCategorizedRestaurantResp>> getCategorizedRestaurants(
+            @PathVariable String category,
+            @RequestParam(defaultValue = "0") int pageNum,
+            @RequestParam(required = false, defaultValue = "desc") String sortDirectionBy,
+            @RequestParam(required = false) long numSortBy,
+            @RequestParam(required = false) String alpSortBy
+    ) {
         log.info("RestaurantController.getCategorizedRestaurants");
-        return new BaseResponse<>(restaurantService.getCategorizedRestaurants(category, min_price, page));
+        PageCondition pageCondition = new PageCondition(pageNum, sortDirectionBy, numSortBy, alpSortBy);
+        return new BaseResponse<>(restaurantService.getCategorizedRestaurants(category, pageCondition));
     }
 
     @PostMapping("/{restaurant_PK}/addMenu")

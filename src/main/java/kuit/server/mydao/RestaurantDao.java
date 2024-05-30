@@ -1,5 +1,6 @@
 package kuit.server.mydao;
 
+import kuit.server.mycontroller.PageCondition;
 import kuit.server.mydto.retaurant.GetCategorizedRestaurantResp;
 import kuit.server.mydto.retaurant.GetCategoryResp;
 import kuit.server.mydto.retaurant.RestaurantReq;
@@ -61,12 +62,12 @@ public class RestaurantDao {
         });
     }
 
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, long min_price, int page) {
+    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, PageCondition pageCondition) {
         String sql = "select * from restaurant where category = :category and min_price >= :min_price";
 
         Map<String, Object> param = new HashMap<>();
         param.put("category", category);
-        param.put("min_price", min_price);
+        param.put("min_price", pageCondition.getNumSortBy());
 
         return jdbcTemplate.query(sql,param,(rs, rowNum) -> {
             GetCategorizedRestaurantResp restaurantResp = new GetCategorizedRestaurantResp();
