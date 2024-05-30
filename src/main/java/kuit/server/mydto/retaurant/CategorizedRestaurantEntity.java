@@ -5,15 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetCategorizedRestaurantResp {
-
-    private List<CategorizedRestaurantEntity> categorizedRestaurants;
-    private boolean hasNextEntity;
-    private long lastId;
+public class CategorizedRestaurantEntity {
+    String name;
+    long min_price;
+    String pic_URL;
 }

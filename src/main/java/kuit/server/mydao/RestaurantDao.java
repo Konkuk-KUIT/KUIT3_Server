@@ -1,13 +1,10 @@
 package kuit.server.mydao;
 
-import kuit.server.mycontroller.PageCondition;
-import kuit.server.mydto.retaurant.GetCategorizedRestaurantResp;
-import kuit.server.mydto.retaurant.GetCategoryResp;
-import kuit.server.mydto.retaurant.RestaurantReq;
+import kuit.server.mydto.retaurant.*;
 import kuit.server.mydto.retaurant.menu.PostMenuReq;
 import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
+import kuit.server.myservice.RestaurantService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,6 +25,8 @@ public class RestaurantDao {
     public RestaurantDao(DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
+
+    public static final int DEFAULT_SIZE = 3;
 
     public long enrollRestaurant(RestaurantReq restaurantReq) {
         log.info("RestaurantDao.enrollRestaurant");
@@ -62,20 +61,22 @@ public class RestaurantDao {
         });
     }
 
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurants(String category, PageCondition pageCondition) {
-        String sql = "select * from restaurant where category = :category and min_price >= :min_price";
-
-        Map<String, Object> param = new HashMap<>();
-        param.put("category", category);
-        param.put("min_price", pageCondition.getNumSortBy());
-
-        return jdbcTemplate.query(sql,param,(rs, rowNum) -> {
-            GetCategorizedRestaurantResp restaurantResp = new GetCategorizedRestaurantResp();
-            restaurantResp.setName(rs.getString("name"));
-            restaurantResp.setMin_price(rs.getLong("min_price"));
-            restaurantResp.setCategory(rs.getString("category"));
-            restaurantResp.setPic_URL(rs.getString("pic_URL"));
-            return restaurantResp;
+    public List<CategorizedRestaurantEntity> getCategorizedRestaurantRespList(String category, PageCondition pageCondition) {
+        String sql = "select * from restaurant where category = :categoryy and " +
+                "restaurant_PK >= :lastId and price >= :min_price " +
+                "limit :limit";
+        Map<String, Object> param = Map.of(
+                "category", category,
+                "lastId", pageCondition.getLastId(),
+                "min_price", pageCondition.getNumSortBy(),
+                "limit", DEFAULT_SIZE
+        );
+        return jdbcTemplate.query(sql, param, (rs, rowNum) -> {
+            CategorizedRestaurantEntity restaurant = new CategorizedRestaurantEntity();
+            restaurant.setName(rs.getString("name"));
+            restaurant.setMin_price(rs.getLong("min_price"));
+            restaurant.setPic_URL(rs.getString("pic_URL"));
+            return restaurant;
         });
     }
 
@@ -100,4 +101,6 @@ public class RestaurantDao {
         Map<String, Object> param = Map.of("restaurant_PK", restaurantPk);
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, param, boolean.class));
     }
+
+
 }

@@ -6,13 +6,13 @@ import kuit.server.mydto.retaurant.GetCategorizedRestaurantResp;
 import kuit.server.mydto.retaurant.GetCategoryResp;
 import kuit.server.mydto.retaurant.RestaurantReq;
 import kuit.server.mydto.retaurant.RestaurantResp;
+import kuit.server.mydto.retaurant.PageCondition;
 import kuit.server.mydto.retaurant.menu.PostMenuReq;
 import kuit.server.mydto.retaurant.menu.PostMenuResp;
 import kuit.server.mydto.retaurant.menu.RestaurantMenuResp;
 import kuit.server.myservice.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.parameters.P;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_RESTAURANT_VALUE;
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.RESTAURANT_NOT_FOUND;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
 @RestController
@@ -53,15 +52,14 @@ public class RestaurantController {
     }
 
     @GetMapping("/{category}")
-    public BaseResponse<List<GetCategorizedRestaurantResp>> getCategorizedRestaurants(
+    public BaseResponse<GetCategorizedRestaurantResp> getCategorizedRestaurants(
             @PathVariable String category,
-            @RequestParam(defaultValue = "0") int pageNum,
+            @RequestParam(defaultValue = "0") int lastId,
             @RequestParam(required = false, defaultValue = "desc") String sortDirectionBy,
-            @RequestParam(required = false) long numSortBy,
-            @RequestParam(required = false) String alpSortBy
+            @RequestParam(required = false) long numSortBy
     ) {
         log.info("RestaurantController.getCategorizedRestaurants");
-        PageCondition pageCondition = new PageCondition(pageNum, sortDirectionBy, numSortBy, alpSortBy);
+        PageCondition pageCondition = new PageCondition(lastId, sortDirectionBy, numSortBy);
         return new BaseResponse<>(restaurantService.getCategorizedRestaurants(category, pageCondition));
     }
 

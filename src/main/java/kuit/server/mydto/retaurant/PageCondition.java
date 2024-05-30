@@ -1,4 +1,4 @@
-package kuit.server.mycontroller;
+package kuit.server.mydto.retaurant;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -16,11 +16,9 @@ public class PageCondition {
 
     @NotBlank(message = "페이지 번호가 필요합니다.")
     @Min(value = 0, message = "페이지 번호는 최소 {value} 이상이어야 합니다.")
-    private int pageNum;
+    private int lastId;
     @Nullable
     private String sortDirectionBy;
     @Nullable
     private long numSortBy;
-    @Nullable
-    private String alpSortBy;
 }
