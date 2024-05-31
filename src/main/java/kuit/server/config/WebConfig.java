@@ -14,19 +14,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final JwtAuthInterceptor jwtAuthenticationInterceptor;
-    private final JwtAuthHandlerArgumentResolver jwtAuthHandlerArgumentResolver;
+  private final JwtAuthInterceptor jwtAuthenticationInterceptor;
+  private final JwtAuthHandlerArgumentResolver jwtAuthHandlerArgumentResolver;
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtAuthenticationInterceptor)
-                .order(1)
-                .addPathPatterns("/auth/test");
-    }
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(jwtAuthenticationInterceptor)
+      .order(1)
+      .addPathPatterns("/auth/**")
+      .addPathPatterns("/users/**")
+      .addPathPatterns("/stores/{storeId}/info")
+      .addPathPatterns("/stores/register")
+      .addPathPatterns("/stores/{storeId}/menus/register")
+      .addPathPatterns("/stores/{storeId}/menus/{menuId}/info")
+      .excludePathPatterns("/users/register")
+      .excludePathPatterns("/auth/login");
+  }
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(jwtAuthHandlerArgumentResolver);
-    }
-
+  @Override
+  public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    resolvers.add(jwtAuthHandlerArgumentResolver);
+  }
 }
