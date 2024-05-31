@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.MenuException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.menu.GetMenuResponse;
@@ -7,6 +8,8 @@ import kuit.server.dto.menu.PostMenuRequest;
 import kuit.server.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,12 +31,12 @@ public class MenuController {
    * 메뉴 신규 등록
    */
   @PostMapping("")
-  public BaseResponse<Object> register(@PathVariable long storeId, @Validated @RequestBody PostMenuRequest request, BindingResult bindingResult) {
+  public BaseResponse<Object> register(@PreAuthorize long userId, @PathVariable long storeId, @Validated @RequestBody PostMenuRequest request, BindingResult bindingResult) {
     log.info("[menuController.register]");
     if (bindingResult.hasErrors()) {
       throw new MenuException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
     }
-    menuService.register(storeId, request);
+    menuService.register(userId, storeId, request);
     return new BaseResponse<>(null);
   }
 
@@ -49,13 +52,13 @@ public class MenuController {
   /**
    * 메뉴 정보 수정
    */
-  @PatchMapping("/{menuId}")
-  public BaseResponse<Object> update(@PathVariable long storeId, @PathVariable long menuId, @Validated @RequestBody PostMenuRequest request, BindingResult bindingResult) {
+  @PatchMapping("/{menuId}/info")
+  public BaseResponse<Object> update(@PreAuthorize long userId, @PathVariable long storeId, @PathVariable long menuId, @Validated @RequestBody PostMenuRequest request, BindingResult bindingResult) {
     log.info("[MenuController.update]");
     if (bindingResult.hasErrors()) {
       throw new MenuException(INVALID_MENU_VALUE, getErrorMessages(bindingResult));
     }
-    menuService.update(menuId, request);
+    menuService.update(userId, storeId, menuId, request);
     return new BaseResponse<>(null);
   }
 
@@ -63,8 +66,8 @@ public class MenuController {
    * 메뉴 리스트 조회
    */
   @GetMapping("")
-  public BaseResponse<List<GetMenuResponse>> getMenuList(@PathVariable long storeId) {
+  public BaseResponse<List<GetMenuResponse>> getMenuList(@PathVariable long storeId, @PageableDefault(size = 5, sort = "price") Pageable pageable) {
     log.info("[MenuController.getMenuList]");
-    return new BaseResponse<>(menuService.getMenuList(storeId));
+    return new BaseResponse<>(menuService.getMenuList(storeId, pageable));
   }
 }

@@ -19,6 +19,7 @@ public class GetMenuResponse {
     return GetMenuResponse.builder()
       .menuId(menu.getMenuId())
       .menuName(menu.getName())
+      .price(menu.getPrice())
       .description(menu.getDescription())
       .description(menu.getDescription())
       .build();

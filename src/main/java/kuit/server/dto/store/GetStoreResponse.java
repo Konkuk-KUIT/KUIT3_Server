@@ -8,7 +8,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class GetStoreResponse {
   private Long storeId;
   private String businessNumber;

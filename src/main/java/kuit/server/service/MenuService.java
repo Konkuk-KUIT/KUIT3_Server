@@ -1,7 +1,7 @@
 package kuit.server.service;
 
 import kuit.server.common.exception.MenuException;
-import kuit.server.common.exception.StoreException;
+import kuit.server.common.exception.UserException;
 import kuit.server.domain.Menu;
 import kuit.server.domain.Store;
 import kuit.server.dto.menu.GetMenuResponse;
@@ -10,6 +10,7 @@ import kuit.server.repository.MenuRepository;
 import kuit.server.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,19 +26,20 @@ public class MenuService {
   private final StoreRepository storeRepository;
   private final MenuRepository menuRepository;
 
-  public void register(long storeId, PostMenuRequest request) {
+  public void register(long userId, long storeId, PostMenuRequest request) {
     log.info("[MenuService.register]");
-    validateStoreId(storeId);
+    Store store = validateStoreId(storeId);
+    validateUser(userId, store.getUserId());
     validateMenuName(request.getName());
     menuRepository.save(Menu.from(request, storeId));
   }
 
-  public void update(long storeId, PostMenuRequest request) {
+  public void update(long userId, long storeId, long menuId, PostMenuRequest request) {
     log.info("[MenuService.update]");
 
-    Store store = storeRepository.findById(storeId)
-      .orElseThrow(() -> new StoreException(STORE_NOT_FOUND));
-    Menu menu = menuRepository.findByStoreIdAndName(store.getStoreId(), request.getName())
+    Store store = validateStoreId(storeId);
+    validateUser(userId, store.getUserId());
+    Menu menu = menuRepository.findByStoreIdAndMenuId(storeId, menuId)
       .orElseThrow(() -> new MenuException(MENU_NOT_FOUND));
 
     menu.setName(request.getName());
@@ -49,21 +51,26 @@ public class MenuService {
   public GetMenuResponse getMenuInfo(long storeId, long menuId) {
     log.info("[MenuService.getMenuInfo]");
     validateStoreId(storeId);
-    return GetMenuResponse.from(menuRepository.findById(menuId)
+    return GetMenuResponse.from(menuRepository.findByStoreIdAndMenuId(storeId, menuId)
       .orElseThrow(() -> new MenuException(MENU_NOT_FOUND)));
   }
 
-  public List<GetMenuResponse> getMenuList(long storeId) {
-    List<GetMenuResponse> menuList = new ArrayList<>();
+  public List<GetMenuResponse> getMenuList(long storeId, Pageable pageable) {
     log.info("[MenuService.getMenuList]");
-    menuRepository.getMenus().forEach(x ->
+    List<GetMenuResponse> menuList = new ArrayList<>();
+    menuRepository.findAllByStoreId(storeId, pageable).forEach(x ->
       menuList.add(GetMenuResponse.from(x)));
     return menuList;
   }
 
-  private void validateStoreId(long storeId) {
-    if (!storeRepository.existsById(storeId)) {
-      throw new MenuException(INVALID_STORE_VALUE);
+  private Store validateStoreId(long storeId) {
+    return storeRepository.findById(storeId)
+      .orElseThrow(() -> new MenuException(INVALID_STORE_VALUE));
+  }
+
+  private void validateUser(long userId, long savedUserId) {
+    if (userId != savedUserId) {
+      throw new UserException(BAD_REQUEST);
     }
   }
 
