@@ -117,3 +117,10 @@ logging:
       hibernate:
         sql: debug
         jdbc: trace
+
+---
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
