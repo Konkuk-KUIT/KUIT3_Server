@@ -11,12 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Entity(name = "menu")
+@Entity(name = "store")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +23,7 @@ public class Store {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long storeId;
+  private Long userId;
   private String businessNumber;
   private String name;
   private Integer openTime;
@@ -36,9 +36,10 @@ public class Store {
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  public static Store from(PostStoreRequest request) {
+  public static Store from(PostStoreRequest request, long userId) {
     return Store.builder()
       .businessNumber(request.getBusinessNumber())
+      .userId(userId)
       .name(request.getName())
       .openTime(request.getOpenTime())
       .closeTime(request.getCloseTime())
@@ -51,7 +52,6 @@ public class Store {
       .updatedAt(LocalDateTime.now())
       .build();
   }
-
   public static Store from(PatchStoreRequest request) {
     return Store.builder()
       .openTime(request.getOpenTime())

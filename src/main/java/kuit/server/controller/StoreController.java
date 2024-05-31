@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.StoreException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.store.GetStoreResponse;
@@ -8,6 +9,7 @@ import kuit.server.dto.store.PostStoreRequest;
 import kuit.server.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +30,13 @@ public class StoreController {
   /**
    * 가게 신규 등록
    */
-  @PostMapping("")
-  public BaseResponse<Object> register(@Validated @RequestBody PostStoreRequest request, BindingResult bindingResult) {
+  @PostMapping("/register")
+  public BaseResponse<Object> register(@PreAuthorize long userId, @Validated @RequestBody PostStoreRequest request, BindingResult bindingResult) {
     log.info("[StoreController.register]");
     if (bindingResult.hasErrors()) {
       throw new StoreException(INVALID_STORE_VALUE, getErrorMessages(bindingResult));
     }
-    storeService.register(request);
+    storeService.register(request, userId);
     return new BaseResponse<>(null);
   }
 
@@ -50,13 +52,13 @@ public class StoreController {
   /**
    * 가게 정보 수정
    */
-  @PatchMapping("/{storeId}")
-  public BaseResponse<Object> update(@PathVariable long storeId, @Validated @RequestBody PatchStoreRequest request, BindingResult bindingResult) {
+  @PatchMapping("/{storeId}/info")
+  public BaseResponse<Object> update(@PreAuthorize long userId, @PathVariable long storeId, @Validated @RequestBody PatchStoreRequest request, BindingResult bindingResult) {
     log.info("[StoreController.update]");
     if (bindingResult.hasErrors()) {
       throw new StoreException(INVALID_STORE_VALUE, getErrorMessages(bindingResult));
     }
-    storeService.update(storeId, request);
+    storeService.update(userId, storeId, request);
     return new BaseResponse<>(null);
   }
 
@@ -64,8 +66,9 @@ public class StoreController {
    * 전체 가게 조회
    */
   @GetMapping("")
-  public BaseResponse<List<GetStoreResponse>> getStoreList() {
+  public BaseResponse<List<GetStoreResponse>> getStoreList(Pageable pageable) {
     log.info("[StoreController.getStoreList]");
-    return new BaseResponse<>(storeService.getStoreList());
+    System.out.println("lastIdx = " + pageable);
+    return new BaseResponse<>(storeService.getStoreList(pageable));
   }
 }
