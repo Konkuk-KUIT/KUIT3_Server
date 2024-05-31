@@ -1,5 +1,6 @@
 spring:
   profiles:
+    active: ${ACTIVE_GROUP}
     group:
       "local": "localDB, devPort, secret, web-mvc"
       "dev": "devDB, devPort, secret, web-mvc"
@@ -16,7 +17,8 @@ spring:
     url: ${DATASOURCE_URL_LOCAL}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
+
     dbcp2:
       validation-query: select 1
   sql:
@@ -34,7 +36,7 @@ spring:
     url: ${DATASOURCE_URL_DEV}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     dbcp2:
       validation-query: select 1
   sql:
@@ -52,7 +54,8 @@ spring:
     url: ${DATASOURCE_URL_PROD}
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
+
     dbcp2:
       validation-query: select 1
   sql:
@@ -106,3 +109,18 @@ spring:
 
   messages:
     basename: errors
+
+---
+logging:
+  level:
+    org:
+      hibernate:
+        sql: debug
+        jdbc: trace
+
+---
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
