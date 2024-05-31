@@ -41,22 +41,23 @@ public class RestaurantService {
 
     //카테고리별 식당 조회하기
     public GetCategorizedRestaurantResp getCategorizedRestaurants(String category, PageCondition pageCondition) {
-        if(pageCondition.getSortDirectionBy().isBlank()) {
-            pageCondition.setSortDirectionBy("desc");
-        }
+
+        //FIXME : controller 단에서 defaultValue로 기능 대체
+//        if(pageCondition.getSortDirectionBy().isEmpty()) {
+//            pageCondition.setSortDirectionBy("DESC");
+//        }
         //다음 데이터 조회를 위한 시작 위치 늘려 주기
-        pageCondition.setLastId(pageCondition.getLastId()+1);
+        pageCondition.setLastId(pageCondition.getLastId() + 1);
         GetCategorizedRestaurantResp response = new GetCategorizedRestaurantResp();
-        List<CategorizedRestaurantEntity> restaurants = restaurantDao.getCategorizedRestaurantRespList(category, pageCondition)
+        List<CategorizedRestaurantEntity> restaurants = restaurantDao.getCategorizedRestaurantRespList(category, pageCondition);
         response.setCategorizedRestaurants(restaurants);
 
-        if(restaurants.size() > restaurantDao.DEFAULT_SIZE + 1) {
-            //조회 가능 엔티티가 있음을 알려줌
-            response.setHasNextEntity(true);
-            //다음번 조회 때도 +1을 했을 때 정상 작동하도록 숫자 -1 (-1을 하지 않으면 조회를 할 때마다 +1이 계속 누적된다!!)
-            response.setLastId(restaurants.size()-1);
-        } else {
+        if(restaurants.isEmpty() || restaurants.size() < RestaurantDao.DEFAULT_SIZE) {
             response.setHasNextEntity(false);
+            response.setLastId(pageCondition.getLastId() + restaurants.size());
+        } else {
+            response.setHasNextEntity(true);
+            response.setLastId(pageCondition.getLastId() + RestaurantDao.DEFAULT_SIZE);
         }
         return response;
 
@@ -66,17 +67,13 @@ public class RestaurantService {
     public PostMenuResp addMenu(long restaurant_PK, PostMenuReq postMenuReq) {
         log.info("RestaurantService.addMenu");
         validateRestaurant(restaurant_PK);
-         Long food_PK = restaurantDao.addNewFood(restaurant_PK, postMenuReq);
-         return new PostMenuResp(food_PK);
+        Long food_PK = restaurantDao.addNewFood(restaurant_PK, postMenuReq);
+        return new PostMenuResp(food_PK);
     }
 
     private void validateRestaurant(long restaurant_PK) {
-        if(!restaurantDao.isExist(restaurant_PK)) {
+        if (!restaurantDao.isExist(restaurant_PK)) {
             throw new UserException(RESTAURANT_NOT_FOUND);
         }
-    }
-
-    public List<GetCategorizedRestaurantResp> getCategorizedRestaurantsV2(String category, Pageable pageable) {
-        log.info("RestaurantService.getCategorizedRestaurantsV2");
     }
 }

@@ -1,6 +1,7 @@
 package kuit.server.mycontroller;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.mydto.member.*;
@@ -43,8 +44,8 @@ public class MemberController {
         return new BaseResponse<>(memberService.logIn(postLoginReq));
     }
 
-    @PatchMapping("/{userId}/email")
-    public BaseResponse<String> updateEmail(@PathVariable long userId, @Validated @RequestBody PatchEmailReq patchEmailReq, BindingResult bindingResult) {
+    @PatchMapping("/email")
+    public BaseResponse<String> updateEmail(@PreAuthorize long userId, @Validated @RequestBody PatchEmailReq patchEmailReq, BindingResult bindingResult) {
         log.info("MemberController.updateEmail");
         if(bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
@@ -52,8 +53,8 @@ public class MemberController {
         return new BaseResponse<>(memberService.updateEmail(userId, patchEmailReq));
     }
 
-    @PatchMapping("/{userId}/password")
-    public BaseResponse<String> updatePassword(@PathVariable long userId, @Validated @RequestBody PatchPasswordReq patchPasswordReq, BindingResult bindingResult) {
+    @PatchMapping("/password")
+    public BaseResponse<String> updatePassword(@PreAuthorize long userId, @Validated @RequestBody PatchPasswordReq patchPasswordReq, BindingResult bindingResult) {
         log.info("MemberController.updatePassword");
         if(bindingResult.hasErrors()) {
             throw new RuntimeException(getErrorMessages(bindingResult));
@@ -61,8 +62,8 @@ public class MemberController {
         return new BaseResponse<>(memberService.updatePassword(userId, patchPasswordReq));
     }
 
-    @PutMapping("/{userId}")
-    public BaseResponse<String> updateAllInfo(@PathVariable long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
+    @PutMapping("/updateAll")
+    public BaseResponse<String> updateAllInfo(@PreAuthorize long userId, @Validated @RequestBody PostMemberReq postMemberReq, BindingResult bindingResult) {
         log.info("MemberController.updateAllInfo");
         if(bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));

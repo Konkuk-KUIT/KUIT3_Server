@@ -55,7 +55,7 @@ public class RestaurantController {
     public BaseResponse<GetCategorizedRestaurantResp> getCategorizedRestaurants(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int lastId,
-            @RequestParam(required = false, defaultValue = "desc") String sortDirectionBy,
+            @RequestParam(required = false, defaultValue = "DESC") String sortDirectionBy,
             @RequestParam(required = false) long numSortBy
     ) {
         log.info("RestaurantController.getCategorizedRestaurants");
@@ -72,6 +72,4 @@ public class RestaurantController {
 
         return new BaseResponse<>(restaurantService.addMenu(restaurant_PK ,postMenuReq));
     }
-
-
 }

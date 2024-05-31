@@ -26,7 +26,7 @@ public class RestaurantDao {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
-    public static final int DEFAULT_SIZE = 3;
+    public static final int DEFAULT_SIZE = 2;
 
     public long enrollRestaurant(RestaurantReq restaurantReq) {
         log.info("RestaurantDao.enrollRestaurant");
@@ -62,13 +62,14 @@ public class RestaurantDao {
     }
 
     public List<CategorizedRestaurantEntity> getCategorizedRestaurantRespList(String category, PageCondition pageCondition) {
-        String sql = "select * from restaurant where category = :categoryy and " +
-                "restaurant_PK >= :lastId and price >= :min_price " +
-                "limit :limit";
+        String sql = "select * from restaurant where category = :category and " +
+                "min_price >= :numSortBy and restaurant_PK > :lastId " +
+                "order by restaurant_PK " + pageCondition.getSortDirectionBy() +
+                " limit :limit";
         Map<String, Object> param = Map.of(
                 "category", category,
                 "lastId", pageCondition.getLastId(),
-                "min_price", pageCondition.getNumSortBy(),
+                "numSortBy", pageCondition.getNumSortBy(),
                 "limit", DEFAULT_SIZE
         );
         return jdbcTemplate.query(sql, param, (rs, rowNum) -> {
