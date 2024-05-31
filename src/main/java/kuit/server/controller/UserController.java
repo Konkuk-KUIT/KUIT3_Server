@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
@@ -40,7 +41,7 @@ public class UserController {
      * 회원 휴면
      */
     @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_dormant(@PreAuthorize long userId) {
         log.info("[UserController.modifyUserStatus_dormant]");
         userService.modifyUserStatus_dormant(userId);
         return new BaseResponse<>(null);
@@ -50,7 +51,7 @@ public class UserController {
      * 회원 탈퇴
      */
     @PatchMapping("/{userId}/cancel")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
+    public BaseResponse<Object> modifyUserStatus_deleted(@PreAuthorize long userId) {
         log.info("[UserController.modifyUserStatus_delete]");
         userService.modifyUserStatus_deleted(userId);
         return new BaseResponse<>(null);
@@ -60,7 +61,7 @@ public class UserController {
      * 닉네임 변경
      */
     @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
+    public BaseResponse<String> modifyNickname(@PreAuthorize long userId,
                                                @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
         log.info("[UserController.modifyNickname]");
         if (bindingResult.hasErrors()) {
@@ -86,12 +87,12 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public GetUserResponse getUserInfo(@PathVariable long userId) {
+    public GetUserResponse getUserInfo(@PreAuthorize long userId) {
         return userService.getUserInfoByUserId(userId);
     }
 
     @GetMapping("/{userId}/order-history")
-    public List<GetUserOrderHistoryResponse> getUserOrderHistory (@PathVariable long userId,
+    public List<GetUserOrderHistoryResponse> getUserOrderHistory (@PreAuthorize long userId,
                                                                   @RequestBody long lastOrderId, @RequestBody int size) {
         return userService.getOrderByUserId(userId, lastOrderId, size);
     }
