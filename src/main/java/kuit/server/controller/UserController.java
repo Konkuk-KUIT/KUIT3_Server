@@ -1,5 +1,6 @@
 package kuit.server.controller;
 
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.GetUserResponse;
@@ -9,13 +10,14 @@ import kuit.server.dto.user.PostUserResponse;
 import kuit.server.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_STATUS;
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.INVALID_USER_VALUE;
 import static kuit.server.util.BindingResultUtils.getErrorMessages;
 
@@ -30,7 +32,7 @@ public class UserController {
   /**
    * 회원 가입
    */
-  @PostMapping("")
+  @PostMapping("/register")
   public BaseResponse<PostUserResponse> signUp(@Validated @RequestBody PostUserRequest postUserRequest, BindingResult bindingResult) {
     log.info("[UserController.signUp]");
     if (bindingResult.hasErrors()) {
@@ -42,8 +44,8 @@ public class UserController {
   /**
    * 회원 상세정보 조회
    */
-  @GetMapping("/{userId}")
-  public BaseResponse<GetUserResponse> getUserInfo(@PathVariable long userId) {
+  @GetMapping("/my")
+  public BaseResponse<GetUserResponse> getUserInfo(@PreAuthorize long userId) {
     log.info("[UserController.getUserInfo]");
     return new BaseResponse<>(userService.getUserInfo(userId));
   }
@@ -51,8 +53,8 @@ public class UserController {
   /**
    * 회원 상태 변경
    */
-  @PatchMapping("/{userId}/{status}")
-  public BaseResponse<Object> modifyUserStatus_active(@PathVariable long userId, @PathVariable String status) {
+  @PatchMapping("/{status}")
+  public BaseResponse<Object> modifyUserStatus(@PreAuthorize long userId, @PathVariable String status) {
     log.info("[UserController.modifyUserStatus]");
     userService.modifyUserStatus(userId, status);
     return new BaseResponse<>(null);
@@ -61,8 +63,8 @@ public class UserController {
   /**
    * 닉네임 변경
    */
-  @PatchMapping("/{userId}/nickname")
-  public BaseResponse<String> modifyNickname(@PathVariable long userId,
+  @PatchMapping("/nickname")
+  public BaseResponse<String> modifyNickname(@PreAuthorize long userId,
                                              @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
     log.info("[UserController.modifyNickname]");
     if (bindingResult.hasErrors()) {
@@ -76,14 +78,8 @@ public class UserController {
    * 회원 목록 조회
    */
   @GetMapping("")
-  public BaseResponse<List<GetUserResponse>> getUsers(
-    @RequestParam(required = false, defaultValue = "") String nickname,
-    @RequestParam(required = false, defaultValue = "") String email,
-    @RequestParam(required = false, defaultValue = "active") String status) {
-    log.info("[UserController.getUsers]");
-    if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
-      throw new UserException(INVALID_USER_STATUS);
-    }
-    return new BaseResponse<>(userService.getUsers(nickname, email, status));
+  public BaseResponse<List<GetUserResponse>> getUserList(@PageableDefault Pageable pageable) {
+    log.info("[UserController.getUserList]");
+    return new BaseResponse<>(userService.getUserList(pageable));
   }
 }

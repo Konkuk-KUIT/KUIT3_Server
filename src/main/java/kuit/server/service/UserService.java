@@ -11,6 +11,8 @@ import kuit.server.type.Status;
 import kuit.server.util.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -54,20 +56,16 @@ public class UserService {
   public void modifyUserStatus(long userId, String status) {
     log.info("[UserService.modifyUserStatus]");
 
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-
+    User user = validateUserId(userId);
     Status selectedStatus = Status.get(status)
       .orElseThrow(() -> new BadRequestException(BAD_REQUEST));
-
     user.setStatus(selectedStatus.toString().toLowerCase());
     userRepository.save(user);
   }
 
   public GetUserResponse getUserInfo(long userId) {
     log.info("[UserService.getUserInfo]");
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    User user = validateUserId(userId);
     return GetUserResponse.from(user);
   }
 
@@ -75,21 +73,29 @@ public class UserService {
     log.info("[UserService.modifyNickname]");
 
     validateNickname(nickname);
-    User user = userRepository.findById(userId)
-      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    User user = validateUserId(userId);
 
     user.setNickname(nickname);
     userRepository.save(user);
   }
 
-  public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+  public List<GetUserResponse> getUserList(Pageable pageable) {
     log.info("[UserService.getUsers]");
     List<GetUserResponse> userList = new ArrayList<>();
-    List<User> users = userRepository.getUsers(nickname, email, status);
-    users.forEach(x -> {
-      userList.add(GetUserResponse.from(x));
-    });
+    Page<User> users = userRepository.findAll(pageable);
+    users.forEach(x -> userList.add(GetUserResponse.from(x)));
     return userList;
+  }
+
+  public User validateUserId(long userId) {
+    return userRepository.findByUserId(userId)
+      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+  }
+
+  public long getUserIdByEmail(String email) {
+    User user = userRepository.findByEmail(email)
+      .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    return user.getUserId();
   }
 
   private void validateEmail(String email) {
