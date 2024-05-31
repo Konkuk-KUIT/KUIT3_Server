@@ -98,8 +98,8 @@ public class UserService {
     }
 
 
-    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId) {
-        List<GetUserOrderHistoryResponse> orders = userDao.getOrderByUserId(userId);
+    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId, long lastOrderId, int size) {
+        List<GetUserOrderHistoryResponse> orders = userDao.getOrderByUserId(userId, lastOrderId, size);
         // 빈값도 오류가 아님
         return orders;
     }

@@ -113,12 +113,16 @@ public class UserDao {
 
     }
 
-    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId) {
+    public List<GetUserOrderHistoryResponse> getOrderByUserId(long userId, long lastOrderId, int size) {
         String sql = "select user.user_id, `order`.order_id, `order`.status, `order`.total from user "
                 + "join `order` on user.user_id = `order`.user_id "
-                + "where user.user_id=:user_id";
+                + "where user.user_id=:user_id and `order`.order_id >:last_order_id "
+                + "limit :size";
 
-        Map<String, Object> param = Map.of("user_id", userId);
+        Map<String, Object> param = Map.of(
+                "user_id", userId,
+                "last_order_id", lastOrderId,
+                "size", size);
 
         return jdbcTemplate.query(sql, param, new BeanPropertyRowMapper<>(GetUserOrderHistoryResponse.class));
     }
