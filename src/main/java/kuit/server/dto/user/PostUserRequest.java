@@ -34,9 +34,6 @@ public class PostUserRequest {
     @Length(max = 25, message = "nickname: 최대 {max}자리까지 가능합니다")
     private String nickname;
 
-    @Nullable
-    private String profileImage;
-
     public void resetPassword(String encodedPassword) {
         this.password = encodedPassword;
     }

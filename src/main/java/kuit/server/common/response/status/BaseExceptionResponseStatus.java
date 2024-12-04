@@ -45,7 +45,17 @@ public enum BaseExceptionResponseStatus implements ResponseStatus {
     USER_NOT_FOUND(4003, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 회원입니다."),
     PASSWORD_NO_MATCH(4004, HttpStatus.BAD_REQUEST.value(), "비밀번호가 일치하지 않습니다."),
     INVALID_USER_STATUS(4005, HttpStatus.BAD_REQUEST.value(), "잘못된 회원 status 값입니다."),
-    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다.");
+    EMAIL_NOT_FOUND(4006, HttpStatus.BAD_REQUEST.value(), "존재하지 않는 이메일입니다."),
+
+    /**
+     * 6000: Restaurant 오류
+     */
+    INVALID_RESTAURANT_VALUE(6000, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 레스토랑 값입니다."),
+    INVALID_CATEGORY(6001, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 카테고리입니다."),
+    /**
+     * 7000: Order 오류
+     */
+    INVALID_ORDER_VALUE(7000, HttpStatus.BAD_REQUEST.value(),"유효하지 않은 주문 값입니다.");
 
     private final int code;
     private final int status;

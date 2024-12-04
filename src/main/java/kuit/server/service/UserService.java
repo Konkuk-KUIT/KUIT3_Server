@@ -9,8 +9,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
+import java.beans.Transient;
 import java.util.List;
 
 import static kuit.server.common.response.status.BaseExceptionResponseStatus.*;
@@ -47,6 +49,7 @@ public class UserService {
         return new PostUserResponse(userId, jwt);
     }
 
+    @Transactional
     public void modifyUserStatus_dormant(long userId) {
         log.info("[UserService.modifyUserStatus_dormant]");
 
@@ -55,7 +58,7 @@ public class UserService {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public void modifyUserStatus_deleted(long userId) {
         log.info("[UserService.modifyUserStatus_deleted]");
 
@@ -65,19 +68,28 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void modifyNickname(long userId, String nickname) {
         log.info("[UserService.modifyNickname]");
 
+        // TODO: 1. 닉네임 중복 검사
         validateNickname(nickname);
+        // TODO: 2. DB update
         int affectedRows = userDao.modifyNickname(userId, nickname);
         if (affectedRows != 1) {
             throw new DatabaseException(DATABASE_ERROR);
         }
     }
 
-    public List<GetUserResponse> getUsers(String nickname, String email, String status) {
+    public List<GetUserResponse> getUsers(String nickname, String email, String status, int page, int size) {
         log.info("[UserService.getUsers]");
-        return userDao.getUsers(nickname, email, status);
+        return userDao.getUsers(nickname, email, status, page,size);
+    }
+
+    public GetUserResponse getUserById(long userId) {
+        log.info("[UserService.getUserById] userId: {}", userId);
+
+        return userDao.findById(userId);
     }
 
     private void validateEmail(String email) {

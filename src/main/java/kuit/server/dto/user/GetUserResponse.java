@@ -14,7 +14,6 @@ public class GetUserResponse {
     private String email;
     private String phoneNumber;
     private String nickname;
-    private String profileImage;
     private String status;
 
 }

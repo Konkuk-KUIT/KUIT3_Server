@@ -1,5 +1,7 @@
 package kuit.server.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import kuit.server.common.argument_resolver.PreAuthorize;
 import kuit.server.common.exception.UserException;
 import kuit.server.common.response.BaseResponse;
 import kuit.server.dto.user.*;
@@ -39,9 +41,14 @@ public class UserController {
     /**
      * 회원 휴면
      */
-    @PatchMapping("/{userId}/dormant")
-    public BaseResponse<Object> modifyUserStatus_dormant(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_dormant]");
+    @PatchMapping("/dormant")
+    public BaseResponse<Object> modifyUserStatus_dormant(HttpServletRequest request) {
+        Object userIdAttribute = request.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalStateException("userId 속성이 요청에 없습니다.");
+        }
+        long userId = (Long) userIdAttribute;
+        log.info("[UserController.modifyUserStatus_dormant] UserId: {}", userId);
         userService.modifyUserStatus_dormant(userId);
         return new BaseResponse<>(null);
     }
@@ -49,9 +56,14 @@ public class UserController {
     /**
      * 회원 탈퇴
      */
-    @PatchMapping("/{userId}/deleted")
-    public BaseResponse<Object> modifyUserStatus_deleted(@PathVariable long userId) {
-        log.info("[UserController.modifyUserStatus_delete]");
+    @PatchMapping("/deleted")
+    public BaseResponse<Object> modifyUserStatus_deleted(HttpServletRequest request) {
+        Object userIdAttribute = request.getAttribute("userId");
+        if (userIdAttribute == null) {
+            throw new IllegalStateException("userId 속성이 요청에 없습니다.");
+        }
+        long userId = (Long) userIdAttribute;
+        log.info("[UserController.modifyUserStatus_delete] UserId: {}", userId);
         userService.modifyUserStatus_deleted(userId);
         return new BaseResponse<>(null);
     }
@@ -59,10 +71,12 @@ public class UserController {
     /**
      * 닉네임 변경
      */
-    @PatchMapping("/{userId}/nickname")
-    public BaseResponse<String> modifyNickname(@PathVariable long userId,
-                                               @Validated @RequestBody PatchNicknameRequest patchNicknameRequest, BindingResult bindingResult) {
+    @PatchMapping("/nickname")
+    public BaseResponse<String> modifyNickname(@Validated @RequestBody PatchNicknameRequest patchNicknameRequest,
+                                               BindingResult bindingResult,
+                                               @PreAuthorize long userId) {
         log.info("[UserController.modifyNickname]");
+
         if (bindingResult.hasErrors()) {
             throw new UserException(INVALID_USER_VALUE, getErrorMessages(bindingResult));
         }
@@ -77,12 +91,21 @@ public class UserController {
     public BaseResponse<List<GetUserResponse>> getUsers(
             @RequestParam(required = false, defaultValue = "") String nickname,
             @RequestParam(required = false, defaultValue = "") String email,
-            @RequestParam(required = false, defaultValue = "active") String status) {
+            @RequestParam(required = false, defaultValue = "active") String status,
+            @RequestParam(required = false, defaultValue = "1") int page,
+            @RequestParam(required = false, defaultValue = "10") int size) {
         log.info("[UserController.getUsers]");
         if (!status.equals("active") && !status.equals("dormant") && !status.equals("deleted")) {
             throw new UserException(INVALID_USER_STATUS);
         }
-        return new BaseResponse<>(userService.getUsers(nickname, email, status));
+        return new BaseResponse<>(userService.getUsers(nickname, email, status, page, size));
     }
-
+    /**
+     * 회원 조회
+     */
+    @GetMapping("/{userId}")
+    public BaseResponse<GetUserResponse> getUserById(@PathVariable long userId) {
+        log.info("[UserController.getUserById] userId: {}", userId);
+        return new BaseResponse<>(userService.getUserById(userId));
+    }
 }
